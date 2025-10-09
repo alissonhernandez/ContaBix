@@ -15,27 +15,28 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder; // Inyectamos el encoder
+    private PasswordEncoder passwordEncoder;
 
     // Registrar usuario con contraseña cifrada
     public Usuario registrar(Usuario usuario) {
-        // Ciframos la contraseña antes de guardarla
         String hashedPassword = passwordEncoder.encode(usuario.getContrasena());
         usuario.setContrasena(hashedPassword);
         return usuarioRepository.save(usuario);
     }
 
-    // Login comparando la contraseña cifrada
+    // Login comparando contraseña cifrada
     public Optional<Usuario> login(String correo, String contrasena) {
         Optional<Usuario> usuario = usuarioRepository.findByCorreo(correo);
-
         if (usuario.isPresent()) {
-            // Comparamos la contraseña ingresada con la cifrada en DB
             if (passwordEncoder.matches(contrasena, usuario.get().getContrasena())) {
                 return usuario;
             }
         }
         return Optional.empty();
     }
-}
 
+    // Verifica si un correo ya existe
+    public boolean existsByCorreo(String correo) {
+        return usuarioRepository.existsByCorreo(correo);
+    }
+}
