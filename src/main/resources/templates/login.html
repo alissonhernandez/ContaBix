@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Iniciar Sesión</title>
+</head>
+<body>
+<h2>Iniciar Sesión</h2>
+
+<form action="/login" method="post">
+    <input type="text" name="correo" placeholder="Correo" required><br>
+    <input type="password" name="contrasena" placeholder="Contraseña" required><br>
+    <button type="submit">Entrar</button>
+</form>
+
+<p th:text="${error}"></p>
+<a href="/registro">Crear cuenta</a>
+</body>
+</html>
