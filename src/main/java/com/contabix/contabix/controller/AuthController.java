@@ -16,47 +16,60 @@ public class AuthController {
     @Autowired
     private UsuarioService usuarioService;
 
+    // --- Formulario de login ---
     @GetMapping("/login")
     public String loginForm() {
         return "login";
     }
 
+    // --- Formulario de registro ---
     @GetMapping("/registro")
     public String registroForm() {
         return "registro";
     }
 
+    // --- Registro de usuario ---
     @PostMapping("/registro")
     public String registro(@RequestParam String nombre,
+                           @RequestParam String apellido,
+                           @RequestParam String usuario,
                            @RequestParam String correo,
                            @RequestParam String contrasena,
                            Model model) {
 
-        if (nombre.isBlank() || correo.isBlank() || contrasena.isBlank()) {
+        // Validación de campos vacíos
+        if (nombre.isBlank() || apellido.isBlank() || correo.isBlank() || contrasena.isBlank()) {
             model.addAttribute("error", "Todos los campos son obligatorios");
             return "registro";
         }
 
+        // Validación de correo
         if (!correo.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
             model.addAttribute("error", "Correo inválido");
             return "registro";
         }
 
+        // Validación de contraseña
         if (contrasena.length() < 6) {
             model.addAttribute("error", "La contraseña debe tener al menos 6 caracteres");
             return "registro";
         }
 
+        // Verificar si el correo ya existe
         if (usuarioService.existsByCorreo(correo)) {
             model.addAttribute("error", "El correo ya está registrado");
             return "registro";
         }
 
         try {
+            // Crear usuario y guardar
             Usuario nuevo = new Usuario();
             nuevo.setNombre(nombre);
+            nuevo.setApellido(apellido);
+            nuevo.setUsuario(usuario);
             nuevo.setCorreo(correo);
             nuevo.setContrasena(contrasena);
+
             usuarioService.registrar(nuevo);
 
             model.addAttribute("mensaje", "Usuario registrado correctamente");
@@ -67,6 +80,7 @@ public class AuthController {
         }
     }
 
+    // --- Login ---
     @PostMapping("/login")
     public String login(@RequestParam String correo,
                         @RequestParam String contrasena,
@@ -83,20 +97,26 @@ public class AuthController {
         }
     }
 
+    // --- Página de inicio ---
     @GetMapping("/inicio")
     public String inicio(HttpSession session, Model model,
                          @RequestParam(required = false) String mensaje) {
+
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario == null) {
             return "redirect:/login";
         }
+
         model.addAttribute("usuario", usuario);
+
         if (mensaje != null) {
             model.addAttribute("mensaje", mensaje);
         }
+
         return "inicio";
     }
 
+    // --- Logout ---
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
