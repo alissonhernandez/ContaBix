@@ -82,7 +82,7 @@ public class UsuarioController {
 
         List<Usuario> usuarios = usuarioRepository.findAll();
         List<Rol> roles = rolRepository.findAll();
-
+        model.addAttribute("usuario", usuarioSesion);
         model.addAttribute("usuarios", usuarios);
         model.addAttribute("roles", roles);
         return "gestionar-usuarios";
