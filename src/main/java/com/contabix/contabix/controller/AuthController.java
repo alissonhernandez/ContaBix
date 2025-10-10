@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpSession;
 import java.util.Optional;
 
 @Controller
@@ -31,44 +32,37 @@ public class AuthController {
                            @RequestParam String contrasena,
                            Model model) {
 
-        // Validaciones básicas
         if (nombre.isBlank() || correo.isBlank() || contrasena.isBlank()) {
             model.addAttribute("error", "Todos los campos son obligatorios");
             return "registro";
         }
 
-        // Validar formato de correo
         if (!correo.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-            model.addAttribute("error", "Correo inválido. Ejemplo: usuario@dominio.com");
+            model.addAttribute("error", "Correo inválido");
             return "registro";
         }
 
-        // Validar contraseña
         if (contrasena.length() < 6) {
-            model.addAttribute("error", "La contraseña debe tener al menos 6 caracteres. Ejemplo: abc123");
+            model.addAttribute("error", "La contraseña debe tener al menos 6 caracteres");
             return "registro";
         }
 
-        // Verificar si el correo ya está registrado
         if (usuarioService.existsByCorreo(correo)) {
-            model.addAttribute("error", "El correo ya está registrado. Intenta con otro correo");
+            model.addAttribute("error", "El correo ya está registrado");
             return "registro";
         }
 
         try {
-            // Crear usuario y registrar
             Usuario nuevo = new Usuario();
             nuevo.setNombre(nombre);
             nuevo.setCorreo(correo);
             nuevo.setContrasena(contrasena);
             usuarioService.registrar(nuevo);
 
-            model.addAttribute("mensaje", "Usuario registrado correctamente. Ahora puedes iniciar sesión");
+            model.addAttribute("mensaje", "Usuario registrado correctamente");
             return "login";
-
         } catch (Exception e) {
-            // Mensaje de error general si algo falla
-            model.addAttribute("error", "No se pudo registrar el usuario. Intenta nuevamente");
+            model.addAttribute("error", "No se pudo registrar el usuario");
             return "registro";
         }
     }
@@ -76,21 +70,36 @@ public class AuthController {
     @PostMapping("/login")
     public String login(@RequestParam String correo,
                         @RequestParam String contrasena,
+                        HttpSession session,
                         Model model) {
-
-        if (correo.isBlank() || contrasena.isBlank()) {
-            model.addAttribute("error", "Correo y contraseña son obligatorios");
-            return "login";
-        }
 
         Optional<Usuario> usuario = usuarioService.login(correo, contrasena);
         if (usuario.isPresent()) {
-            model.addAttribute("usuario", usuario.get());
-            model.addAttribute("mensaje", "Bienvenido " + usuario.get().getNombre());
-            return "inicio"; // Página de inicio después del login
+            session.setAttribute("usuario", usuario.get());
+            return "redirect:/inicio";
         } else {
             model.addAttribute("error", "Correo o contraseña incorrectos");
             return "login";
         }
+    }
+
+    @GetMapping("/inicio")
+    public String inicio(HttpSession session, Model model,
+                         @RequestParam(required = false) String mensaje) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("usuario", usuario);
+        if (mensaje != null) {
+            model.addAttribute("mensaje", mensaje);
+        }
+        return "inicio";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
     }
 }

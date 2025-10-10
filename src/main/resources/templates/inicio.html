@@ -1,9 +1,24 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>Inicio</title>
 </head>
 <body>
-<h1 th:text="'Bienvenido, ' + ${usuario.nombre} + '!'"></h1>
+<nav>
+    <a th:href="@{/perfil}">Perfil</a> |
+    <a th:href="@{/librodiario}">Libro Diario</a> |
+    <a th:href="@{/libromayor}">Libro Mayor</a> |
+    <span th:if="${usuario.rol.nombre == 'admin'}">
+        <a th:href="@{/admin/usuarios}">Gestionar Usuarios</a> |
+    </span>
+    <a th:href="@{/logout}">Cerrar Sesión</a>
+</nav>
+
+<h1 th:text="'Bienvenido, ' + ${usuario.nombre} + '! Usted ha ingresado como ' + ${usuario.rol.nombre}"></h1>
+
+<div th:if="${mensaje}" style="color: green;">
+    <p th:text="${mensaje}"></p>
+</div>
 </body>
 </html>

@@ -7,19 +7,18 @@
 <body>
 <h2>Registro de usuario</h2>
 
-<!-- Mensaje de error -->
-<div th:if="${error}" style="color: red;">
-    <p th:text="${error}"></p>
-</div>
+<div th:if="${error}" style="color: red;"><p th:text="${error}"></p></div>
+<div th:if="${mensaje}" style="color: green;"><p th:text="${mensaje}"></p></div>
 
-<!-- Mensaje de éxito -->
-<div th:if="${mensaje}" style="color: green;">
-    <p th:text="${mensaje}"></p>
-</div>
-
-<form action="#" th:action="@{/registro}" method="post">
+<form th:action="@{/registro}" method="post">
     <label>Nombre:</label>
     <input type="text" name="nombre" required/><br/>
+
+    <label>Apellido:</label>
+    <input type="text" name="apellido" required/><br/>
+
+    <label>Usuario:</label>
+    <input type="text" name="usuario" required/><br/>
 
     <label>Correo:</label>
     <input type="email" name="correo" required/><br/>
