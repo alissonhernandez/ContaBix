@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil</title>
+</head>
+<body>
+<h2>Perfil de usuario</h2>
+
+<p>Nombre: <span th:text="${usuario.nombre}"></span></p>
+<p>Correo: <span th:text="${usuario.correo}"></span></p>
+<p>Rol: <span th:text="${usuario.rol.nombre}"></span></p>
+
+<a th:href="@{/inicio}">Volver al inicio</a>
+</body>
+</html>

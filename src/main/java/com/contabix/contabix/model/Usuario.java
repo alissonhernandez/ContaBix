@@ -17,6 +17,10 @@ public class Usuario {
 
     private String contrasena;
 
+    @ManyToOne
+    @JoinColumn(name = "rol_id")
+    private Rol rol;
+
     // Getters y Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -29,4 +33,7 @@ public class Usuario {
 
     public String getContrasena() { return contrasena; }
     public void setContrasena(String contrasena) { this.contrasena = contrasena; }
+
+    public Rol getRol() { return rol; }
+    public void setRol(Rol rol) { this.rol = rol; }
 }

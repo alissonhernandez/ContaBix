@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestionar Usuarios</title>
+</head>
+<body>
+<h2>Usuarios registrados</h2>
+
+<table border="1">
+    <tr>
+        <th>Nombre</th>
+        <th>Correo</th>
+        <th>Rol</th>
+        <th>Acciones</th>
+    </tr>
+    <tr th:each="u : ${usuarios}">
+        <td th:text="${u.nombre}"></td>
+        <td th:text="${u.correo}"></td>
+        <td th:text="${u.rol.nombre}"></td>
+        <td>
+            <!-- Formulario para cambiar rol -->
+            <form th:action="@{'/admin/usuarios/' + ${u.id} + '/rol'}" method="post" style="display:inline">
+                <input type="number" name="rolId" placeholder="ID Rol" required/>
+                <button type="submit">Cambiar rol</button>
+            </form>
+
+            <!-- Formulario para eliminar usuario -->
+            <form th:action="@{'/admin/usuarios/' + ${u.id} + '/eliminar'}" method="post" style="display:inline">
+                <button type="submit" onclick="return confirm('¿Estás seguro de eliminar este usuario?')">Eliminar</button>
+            </form>
+        </td>
+    </tr>
+</table>
+
+<a th:href="@{/inicio}">Volver al inicio</a>
+</body>
+</html>
