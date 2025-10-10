@@ -2,24 +2,24 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>📘 Libro Diario</title>
+    <title>Libro Diario</title>
     <link rel="stylesheet" th:href="@{/css/inicio.css}">
 
 </head>
 
 <body>
-<!-- ✅ NAVBAR -->
+
 <nav class="navbar">
     <div class="logo">Sistema Contable</div>
     <ul class="nav-links">
         <li><a th:href="@{/inicio}">Inicio</a></li>
         <li><a th:href="@{/admin/usuarios}">Usuarios</a></li>
         <li><a th:href="@{/libro-diario}">Libro Diario</a></li>
+        <li><a th:href="@{/libro-mayor}">Libro Mayor</a></li>
         <li><a th:href="@{/logout}">Cerrar sesión</a></li>
     </ul>
 </nav>
 
-<!-- ✅ CONTENIDO -->
 <main>
     <h1>📘 Libro Diario</h1>
 
