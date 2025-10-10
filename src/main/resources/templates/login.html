@@ -6,6 +6,16 @@
     <link rel="stylesheet" th:href="@{/css/login.css}">
 </head>
 <body>
+<!-- Notificaciones flotantes -->
+<div id="notifications">
+    <div th:if="${error}" class="notification error">
+        <span th:text="${error}"></span>
+    </div>
+    <div th:if="${mensaje}" class="notification success">
+        <span th:text="${mensaje}"></span>
+    </div>
+</div>
+
 <div class="container">
     <!-- Panel izquierdo -->
     <div class="left-panel">
@@ -19,15 +29,6 @@
         <div class="form-container">
             <h2>Iniciar sesión</h2>
 
-            <!-- Mensajes -->
-            <div class="message error" th:if="${error}">
-                <p th:text="${error}"></p>
-            </div>
-            <div class="message success" th:if="${mensaje}">
-                <p th:text="${mensaje}"></p>
-            </div>
-
-            <!-- Formulario -->
             <form th:action="@{/login}" method="post">
                 <label for="correo">Correo:</label>
                 <input type="email" id="correo" name="correo" required>
@@ -44,5 +45,12 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Auto eliminar notificaciones después de 5 segundos
+    setTimeout(() => {
+        document.querySelectorAll('.notification').forEach(n => n.remove());
+    }, 5000);
+</script>
 </body>
 </html>

@@ -6,6 +6,16 @@
     <link rel="stylesheet" th:href="@{/css/registro.css}">
 </head>
 <body>
+<!-- Notificaciones flotantes -->
+<div id="notifications">
+    <div th:if="${error}" class="notification error">
+        <span th:text="${error}"></span>
+    </div>
+    <div th:if="${mensaje}" class="notification success">
+        <span th:text="${mensaje}"></span>
+    </div>
+</div>
+
 <div class="container">
     <!-- Panel izquierdo -->
     <div class="left-panel">
@@ -18,9 +28,6 @@
     <div class="right-panel">
         <div class="form-container">
             <h2>Registro de usuario</h2>
-
-            <div class="message error" th:if="${error}"><p th:text="${error}"></p></div>
-            <div class="message success" th:if="${mensaje}"><p th:text="${mensaje}"></p></div>
 
             <form th:action="@{/registro}" method="post">
                 <div class="row">
@@ -52,6 +59,13 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Auto eliminar notificaciones después de 5 segundos
+    setTimeout(() => {
+        document.querySelectorAll('.notification').forEach(n => n.remove());
+    }, 5000);
+</script>
 </body>
 </html>
 
