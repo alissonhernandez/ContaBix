@@ -16,42 +16,52 @@ import java.util.List;
 public class UsuarioController {
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private UsuarioRepository usuarioRepository; // Repositorio para operaciones CRUD de Usuario
 
     @Autowired
-    private RolRepository rolRepository;
+    private RolRepository rolRepository; // Repositorio para operaciones CRUD de Rol
 
-    // Mostrar perfil propio
+    /**
+     * Mostrar el perfil del usuario que ha iniciado sesión.
+     * Redirige al login si no hay usuario en sesión.
+     */
     @GetMapping("/perfil")
     public String perfil(HttpSession session, Model model) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario == null) {
-            return "redirect:/login";
+            return "redirect:/login"; // Si no hay sesión, redirige a login
         }
         model.addAttribute("usuario", usuario);
-        return "perfil";
+        return "perfil"; // Retorna la vista perfil.html
     }
 
-    // Mostrar perfil de otros usuario (solo admin)
+    /**
+     * Mostrar el perfil de otro usuario (solo accesible por admin).
+     * @param id ID del usuario a mostrar
+     */
     @GetMapping("/perfilUsuario")
     public String perfilUsuario(@RequestParam Long id, HttpSession session, Model model) {
         Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
         if (usuarioSesion == null) {
             return "redirect:/login";
         }
+        // Solo el admin puede ver perfiles de otros usuarios
         if (!usuarioSesion.getRol().getNombre().equalsIgnoreCase("admin")) {
             return "redirect:/inicio";
         }
 
         Usuario usuario = usuarioRepository.findById(id).orElse(null);
         if (usuario == null) {
-            return "redirect:/admin/usuarios";
+            return "redirect:/admin/usuarios"; // Redirige si el usuario no existe
         }
         model.addAttribute("usuario", usuario);
-        return "perfil";
+        return "perfil"; // Reutiliza la vista perfil.html
     }
 
-    // Página Libro Diario
+    /**
+     * Mostrar la página del Libro Diario.
+     * Solo accesible si hay usuario en sesión.
+     */
     @GetMapping("/librodiario")
     public String libroDiario(HttpSession session) {
         if (session.getAttribute("usuario") == null) {
@@ -60,7 +70,10 @@ public class UsuarioController {
         return "librodiario";
     }
 
-    // Página Libro Mayor
+    /**
+     * Mostrar la página del Libro Mayor.
+     * Solo accesible si hay usuario en sesión.
+     */
     @GetMapping("/libromayor")
     public String libroMayor(HttpSession session) {
         if (session.getAttribute("usuario") == null) {
@@ -69,7 +82,10 @@ public class UsuarioController {
         return "libromayor";
     }
 
-    // Listar usuarios (solo admin)
+    /**
+     * Listar todos los usuarios (solo admin).
+     * Muestra además los roles disponibles para poder asignar.
+     */
     @GetMapping("/admin/usuarios")
     public String listarUsuarios(HttpSession session, Model model) {
         Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
@@ -82,13 +98,17 @@ public class UsuarioController {
 
         List<Usuario> usuarios = usuarioRepository.findAll();
         List<Rol> roles = rolRepository.findAll();
-        model.addAttribute("usuario", usuarioSesion);
-        model.addAttribute("usuarios", usuarios);
-        model.addAttribute("roles", roles);
-        return "gestionar-usuarios";
+        model.addAttribute("usuario", usuarioSesion); // Usuario que inició sesión
+        model.addAttribute("usuarios", usuarios);     // Lista de todos los usuarios
+        model.addAttribute("roles", roles);           // Lista de roles para selección
+        return "gestionar-usuarios"; // Vista para administrar usuarios
     }
 
-    // Cambiar rol
+    /**
+     * Cambiar el rol de un usuario específico (solo admin).
+     * @param id ID del usuario a modificar
+     * @param rolId ID del nuevo rol
+     */
     @PostMapping("/admin/usuarios/{id}/rol")
     public String cambiarRol(@PathVariable Long id,
                              @RequestParam Long rolId,
@@ -101,14 +121,18 @@ public class UsuarioController {
         Usuario usuario = usuarioRepository.findById(id).orElse(null);
         Rol nuevoRol = rolRepository.findById(rolId).orElse(null);
 
+        // Actualiza rol solo si ambos existen
         if (usuario != null && nuevoRol != null) {
             usuario.setRol(nuevoRol);
             usuarioRepository.save(usuario);
         }
-        return "redirect:/admin/usuarios";
+        return "redirect:/admin/usuarios"; // Redirige a la lista de usuarios
     }
 
-    // Eliminar usuario
+    /**
+     * Eliminar un usuario específico (solo admin).
+     * @param id ID del usuario a eliminar
+     */
     @PostMapping("/admin/usuarios/{id}/eliminar")
     public String eliminarUsuario(@PathVariable Long id, HttpSession session) {
         Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
@@ -116,6 +140,7 @@ public class UsuarioController {
             return "redirect:/inicio";
         }
 
+        // Elimina usuario si existe
         if (usuarioRepository.existsById(id)) {
             usuarioRepository.deleteById(id);
         }
