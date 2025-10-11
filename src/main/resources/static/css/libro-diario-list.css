@@ -1,128 +1,213 @@
-/* Contenedor principal */
-.container {
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 30px;
-    background-color: var(--color-fondo);
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+:root {
+    --color-fondo: #0F1516;
+    --color-secundario: #234C58;
+    --color-acento: #5E524B;
+    --color-texto: #C9C2C2;
+    --color-terciario: #7F8C94;
+    --color-blanco: #ffffff;
+    --color-exito: #4CAF50;
+    --color-error: #E74C3C;
 }
 
-/* Formulario de filtrado */
-.filter-form {
+/* -------- RESET GENERAL -------- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* -------- NAVBAR -------- */
+.navbar {
+    background-color: var(--color-secundario);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+}
+
+.logo {
+    color: var(--color-blanco);
+    font-size: 22px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--color-blanco);
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-links a:hover,
+.nav-links .active {
+    background-color: var(--color-acento);
+    color: var(--color-blanco);
+}
+
+/* -------- FORMULARIO -------- */
+form {
+    background-color: var(--color-secundario);
+    padding: 15px 20px;
+    border-radius: 10px;
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
+    align-items: center;
     margin-bottom: 25px;
-    background-color: var(--color-secundario);
-    padding: 20px;
-    border-radius: 10px;
 }
 
-.filter-form .form-group {
-    flex: 1 1 200px;
-    display: flex;
-    flex-direction: column;
-}
-
-.filter-form label {
+form label {
     color: var(--color-blanco);
     font-weight: bold;
-    margin-bottom: 5px;
 }
 
-.filter-form input {
-    padding: 8px;
+form input, form button {
+    padding: 8px 10px;
     border-radius: 5px;
-    border: 1px solid var(--color-terciario);
+    border: none;
+    font-size: 0.95em;
 }
 
-/* Tablas */
-.main-table, .inner-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
+form input {
+    background-color: var(--color-terciario);
     color: var(--color-blanco);
 }
 
-.main-table th, .main-table td,
-.inner-table th, .inner-table td {
-    padding: 12px;
-    text-align: center;
-}
-
-.main-table th {
-    background-color: var(--color-secundario);
-    text-transform: uppercase;
-}
-
-.inner-table {
-    margin-top: 5px;
-    background-color: rgba(36, 76, 88, 0.2);
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.inner-table td {
-    background-color: rgba(36, 76, 88, 0.1);
-}
-
-.main-table tr:nth-child(even) td {
-    background-color: rgba(255,255,255,0.05);
-}
-
-.main-table tr:hover td {
-    background-color: rgba(255,255,255,0.15);
-}
-
-/* Botones */
-.btn {
-    display: inline-block;
-    margin: 10px 0;
-    padding: 12px 25px;
-    background-color: var(--color-secundario);
+form button {
+    background: var(--color-acento);
     color: var(--color-blanco);
-    text-decoration: none;
-    border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: background 0.3s, transform 0.2s;
+}
+
+form button:hover {
+    background: var(--color-secundario);
+    transform: translateY(-2px);
+}
+
+/* -------- TABLA -------- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #182224;
+    box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+}
+
+thead {
+    background-color: var(--color-secundario);
+}
+
+thead th {
+    color: var(--color-blanco);
+    padding: 12px;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: bold;
+}
+
+tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+tbody td {
+    padding: 10px 12px;
+    color: var(--color-texto);
+    vertical-align: top;
+}
+
+/* Subtabla (detalles del asiento) */
+tbody td table {
+    width: 100%;
+    margin-top: 5px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 6px;
+}
+
+tbody td table td {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+tbody tr:hover {
+    background-color: rgba(35,76,88,0.4);
+}
+
+/* -------- NUEVO ASIENTO -------- */
+.btn {
+    display: inline-block;
+    background-color: var(--color-exito);
+    color: var(--color-blanco);
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
 
 .btn:hover {
-    background-color: var(--color-acento);
+    background-color: #3da743;
+    transform: translateY(-2px);
 }
 
-/* Alertas */
-.alert {
-    padding: 12px 20px;
-    border-radius: 5px;
-    text-align: center;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-
+/* -------- ALERTAS -------- */
 .alert-success {
-    background-color: #d4edda;
-    color: #155724;
-    border-left: 5px solid #28a745;
+    background-color: var(--color-exito);
+    color: var(--color-blanco);
+    padding: 12px 18px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-weight: bold;
 }
 
 .alert-danger {
-    background-color: #f8d7da;
-    color: #721c24;
-    border-left: 5px solid #dc3545;
+    background-color: var(--color-error);
+    color: var(--color-blanco);
+    padding: 12px 18px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-weight: bold;
 }
 
-/* Responsive */
+/* -------- RESPONSIVE -------- */
 @media screen and (max-width: 768px) {
-    .filter-form {
+    form {
         flex-direction: column;
+        align-items: stretch;
     }
-    .filter-form .form-group {
-        flex: 1 1 auto;
-    }
-    .main-table, .inner-table {
+
+    table, thead, tbody, th, td, tr {
         font-size: 0.9em;
+    }
+
+    .navbar {
+        flex-direction: column;
+        gap: 10px;
     }
 }
