@@ -38,7 +38,8 @@ cd ContaBix
 CREATE DATABASE sistema_contable;
 
 ### 3. Variables del entorno
-# Nombre de la aplicación y perfil activo
+
+## Nombre de la aplicación y perfil activo
 spring.application.name=contabix
 spring.profiles.active=dev
 
