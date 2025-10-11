@@ -5,7 +5,7 @@ Incluye autenticación de usuarios, control de roles y un panel administrativo p
 
 ---
 
-## 🚀 Tecnologías Utilizadas
+# 🚀 Tecnologías Utilizadas
 - **Java 17+**  
 - **Spring Boot 3.x**  
 - **Spring Data JPA**  
@@ -16,7 +16,7 @@ Incluye autenticación de usuarios, control de roles y un panel administrativo p
 
 ---
 
-## 🧰 Requisitos Previos
+# 🧰 Requisitos Previos
 
 | Requisito | Versión mínima | Descripción |
 |------------|----------------|--------------|
@@ -28,10 +28,10 @@ Incluye autenticación de usuarios, control de roles y un panel administrativo p
 
 ---
 
-## ⚙️ Configuración del Proyecto
+# ⚙️ Configuración del Proyecto
 
 ### 1. Clonar el repositorio
-git clone https://github.com/alissonhernandez/ContaBix.git
+git clone https://github.com/alissonhernandez/ContaBix.git <br>
 cd ContaBix
 
 ### 2. Crear la base de datos
@@ -42,20 +42,20 @@ CREATE DATABASE sistema_contable;
 spring.application.name=contabix
 spring.profiles.active=dev
 
-# Configuración de base de datos
+## Configuración de base de datos
 spring.datasource.url=jdbc:postgresql://localhost:5432/sistema_contable
 spring.datasource.username=tu_usuario
 spring.datasource.password=tu_contraseña
 
-# Configuración JPA
+## Configuración JPA
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 
-# Puerto del servidor
+## Puerto del servidor
 server.port=8080
 
-## 🧮 Funcionalidades Principales
+# 🧮 Funcionalidades Principales
 🔐 Autenticación de usuarios
 👥 Gestión de roles (Admin, Auditor, Contador)
 📘 Libro Diario
@@ -64,18 +64,18 @@ server.port=8080
 🧾 Edición y eliminación de usuarios
 💾 Registro de auditorías y cambios de roles
 
-## ▶️ Comandos Útiles
+# ▶️ Comandos Útiles
 
-# Compilar proyecto
+## Compilar proyecto
 mvn clean install
 
-# Ejecutar el proyecto
+## Ejecutar el proyecto
 mvn spring-boot:run
 
-# Acceder a la web
+## Acceder a la web
 http://localhost:8080/login
 
-## 📝 Notas de Desarrollo
+# 📝 Notas de Desarrollo
 
 Spring Boot carga la configuración según el perfil activo (spring.profiles.active=dev).
 
@@ -84,6 +84,3 @@ La contraseña de usuarios se cifra automáticamente usando PasswordEncoder.
 Solo usuarios con rol Admin pueden gestionar otros usuarios y roles.
 
 Las vistas están en Thymeleaf y el estilo es Bootstrap + CSS personalizado.
-
-git clone https://github.com/alissonhernandez/ContaBix.git
-cd ContaBix
