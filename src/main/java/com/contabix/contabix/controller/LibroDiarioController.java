@@ -9,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -23,7 +22,6 @@ public class LibroDiarioController {
     @Autowired
     private AsientoService asientoService;
 
-    // Listado principal con filtros opcionales
     @GetMapping
     public String listar(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
@@ -48,24 +46,20 @@ public class LibroDiarioController {
         return "libro-diario-list";
     }
 
-    // Formulario para nuevo asiento
     @GetMapping("/nuevo")
     public String nuevoAsiento(Model model) {
         Asiento asiento = new Asiento();
-        asiento.setFecha(LocalDate.now());
         model.addAttribute("asiento", asiento);
         return "libro-diario-form";
     }
 
-    // Guardar asiento
     @PostMapping("/guardar")
-    public String guardarAsiento(@ModelAttribute("asiento") Asiento asiento, BindingResult bindingResult, Model model) {
+    public String guardarAsiento(@ModelAttribute("asiento") Asiento asiento,
+                                 BindingResult bindingResult, Model model) {
         try {
-            // Validación y guardado en el servicio
             asientoService.guardarAsientoConValidacion(asiento);
             return "redirect:/libro-diario?success=1";
         } catch (IllegalArgumentException ex) {
-            // Si falla validación mostrar mensaje de error en el formulario
             model.addAttribute("error", ex.getMessage());
             model.addAttribute("asiento", asiento);
             return "libro-diario-form";

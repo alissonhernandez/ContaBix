@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuevo Asiento</title>
+</head>
+<body>
+<h1>Nuevo Asiento</h1>
+
+<form method="post" th:action="@{/libro-diario/guardar}" th:object="${asiento}">
+    Descripción: <input type="text" th:field="*{descripcion}" required><br>
+    <input type="hidden" th:field="*{fecha}" th:value="${asiento.fecha}">
+
+    <h3>Detalles</h3>
+    <table>
+        <tr>
+            <th>Cuenta</th>
+            <th>Debe</th>
+            <th>Haber</th>
+        </tr>
+        <tr th:each="detalle, iterStat : ${asiento.detalles}">
+            <td><input type="text" th:field="*{detalles[__${iterStat.index}__].cuenta.nombre}"></td>
+            <td><input type="number" step="0.01" th:field="*{detalles[__${iterStat.index}__].debe}"></td>
+            <td><input type="number" step="0.01" th:field="*{detalles[__${iterStat.index}__].haber}"></td>
+        </tr>
+    </table>
+
+    <button type="submit">Guardar</button>
+</form>
+
+<a th:href="@{/libro-diario}">Volver</a>
+</body>
+</html>

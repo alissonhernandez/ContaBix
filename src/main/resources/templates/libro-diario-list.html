@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Libro Diario</title>
+</head>
+<body>
+<h1>Libro Diario</h1>
+
+<form method="get" action="#" th:action="@{/libro-diario}">
+    Fecha inicio: <input type="date" name="inicio" th:value="${inicio}">
+    Fecha fin: <input type="date" name="fin" th:value="${fin}">
+    Descripción: <input type="text" name="q" th:value="${q}">
+    <button type="submit">Filtrar</button>
+</form>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Fecha</th>
+        <th>Descripción</th>
+        <th>Usuario</th>
+        <th>Cuenta</th>
+        <th>Debe</th>
+        <th>Haber</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="asiento : ${asientos}">
+        <td th:text="${asiento.fecha}"></td>
+        <td th:text="${asiento.descripcion}"></td>
+        <td th:text="${asiento.usuario.nombre}"></td>
+        <td colspan="3">
+            <table border="0" width="100%">
+                <tr th:each="detalle : ${asiento.detalles}">
+                    <td th:text="${detalle.cuenta.nombre}"></td>
+                    <td th:text="${detalle.debe}"></td>
+                    <td th:text="${detalle.haber}"></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<a th:href="@{/libro-diario/nuevo}">Nuevo Asiento</a>
+</body>
+</html>
