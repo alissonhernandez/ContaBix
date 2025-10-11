@@ -131,4 +131,13 @@ body {
     color: var(--color-terciario);
 }
 
+footer {
+    background-color: var(--color-secundario);
+    color: var(--color-blanco);
+    text-align: center;
+    padding: 15px 20px;
+    margin-top: 40px;
+    border-top: 2px solid var(--color-acento);
+}
+
 
