@@ -2,19 +2,40 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Libro Diario</title>
+    <title>LibroDiario - Contabix</title>
+    <link rel="stylesheet" th:href="@{/css/inicio.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/libro-diario-list.css}">
+
 </head>
 <body>
-<h1>Libro Diario</h1>
+<nav class="navbar">
+    <div class="logo">Sistema Contable</div>
+    <ul class="nav-links">
+        <li><a th:href="@{/inicio}">Inicio</a></li>
+        <li><a th:href="@{/admin/usuarios}">Usuarios</a></li>
+        <li><a th:href="@{/libro-diario}">Libro Diario</a></li>
+        <li><a th:href="@{/libro-mayor}">Libro Mayor</a></li>
+        <li><a th:href="@{/logout}">Cerrar sesión</a></li>
+    </ul>
+</nav>
 
-<form method="get" action="#" th:action="@{/libro-diario}">
+<!-- Formulario de filtrado -->
+<form method="get" th:action="@{/libro-diario}">
     Fecha inicio: <input type="date" name="inicio" th:value="${inicio}">
     Fecha fin: <input type="date" name="fin" th:value="${fin}">
     Descripción: <input type="text" name="q" th:value="${q}">
     <button type="submit">Filtrar</button>
 </form>
 
-<table border="1">
+<!-- Mensajes -->
+<div th:if="${success}" th:text="${success}" style="color:green;"></div>
+<div th:if="${error}" th:text="${error}" style="color:red;"></div>
+
+<!-- Tabla de Asientos -->
+<table border="1" width="100%">
     <thead>
     <tr>
         <th>Fecha</th>
@@ -29,11 +50,11 @@
     <tr th:each="asiento : ${asientos}">
         <td th:text="${asiento.fecha}"></td>
         <td th:text="${asiento.descripcion}"></td>
-        <td th:text="${asiento.usuario.nombre}"></td>
+        <td th:text="${asiento.usuario != null ? asiento.usuario.nombre : 'N/A'}"></td>
         <td colspan="3">
             <table border="0" width="100%">
                 <tr th:each="detalle : ${asiento.detalles}">
-                    <td th:text="${detalle.cuenta.nombre}"></td>
+                    <td th:text="${detalle.cuenta != null ? detalle.cuenta.nombre : 'N/A'}"></td>
                     <td th:text="${detalle.debe}"></td>
                     <td th:text="${detalle.haber}"></td>
                 </tr>
@@ -43,6 +64,8 @@
     </tbody>
 </table>
 
-<a th:href="@{/libro-diario/nuevo}">Nuevo Asiento</a>
+<div style="margin-top:20px;">
+    <a th:href="@{/libro-diario/nuevo}">Nuevo Asiento</a>
+</div>
 </body>
 </html>

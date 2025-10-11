@@ -1,0 +1,128 @@
+/* Contenedor principal */
+.container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: var(--color-fondo);
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+}
+
+/* Formulario de filtrado */
+.filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 25px;
+    background-color: var(--color-secundario);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.filter-form .form-group {
+    flex: 1 1 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-form label {
+    color: var(--color-blanco);
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.filter-form input {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid var(--color-terciario);
+}
+
+/* Tablas */
+.main-table, .inner-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    color: var(--color-blanco);
+}
+
+.main-table th, .main-table td,
+.inner-table th, .inner-table td {
+    padding: 12px;
+    text-align: center;
+}
+
+.main-table th {
+    background-color: var(--color-secundario);
+    text-transform: uppercase;
+}
+
+.inner-table {
+    margin-top: 5px;
+    background-color: rgba(36, 76, 88, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.inner-table td {
+    background-color: rgba(36, 76, 88, 0.1);
+}
+
+.main-table tr:nth-child(even) td {
+    background-color: rgba(255,255,255,0.05);
+}
+
+.main-table tr:hover td {
+    background-color: rgba(255,255,255,0.15);
+}
+
+/* Botones */
+.btn {
+    display: inline-block;
+    margin: 10px 0;
+    padding: 12px 25px;
+    background-color: var(--color-secundario);
+    color: var(--color-blanco);
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background-color: var(--color-acento);
+}
+
+/* Alertas */
+.alert {
+    padding: 12px 20px;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border-left: 5px solid #28a745;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-left: 5px solid #dc3545;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+    .filter-form {
+        flex-direction: column;
+    }
+    .filter-form .form-group {
+        flex: 1 1 auto;
+    }
+    .main-table, .inner-table {
+        font-size: 0.9em;
+    }
+}

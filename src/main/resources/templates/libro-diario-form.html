@@ -1,25 +1,49 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <title>LibroDiario - Contabix</title>
+    <link rel="stylesheet" th:href="@{/css/inicio.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/libro-diario-form.css}">
     <meta charset="UTF-8">
     <title>Nuevo Asiento</title>
 </head>
 <body>
+<nav class="navbar">
+    <ul class="nav-links">
+        <li><a th:href="@{/inicio}">Inicio</a></li>
+        <li><a th:href="@{/admin/usuarios}">Usuarios</a></li>
+        <li><a th:href="@{/libro-diario}">Libro Diario</a></li>
+        <li><a th:href="@{/libro-mayor}">Libro Mayor</a></li>
+        <li><a th:href="@{/logout}">Cerrar sesión</a></li>
+    </ul>
+</nav>
 <h1>Nuevo Asiento</h1>
+
+
+<div th:if="${error}" style="color:red;" th:text="${error}"></div>
 
 <form method="post" th:action="@{/libro-diario/guardar}" th:object="${asiento}">
     Descripción: <input type="text" th:field="*{descripcion}" required><br>
     <input type="hidden" th:field="*{fecha}" th:value="${asiento.fecha}">
 
     <h3>Detalles</h3>
-    <table>
+    <table border="1">
         <tr>
             <th>Cuenta</th>
             <th>Debe</th>
             <th>Haber</th>
         </tr>
         <tr th:each="detalle, iterStat : ${asiento.detalles}">
-            <td><input type="text" th:field="*{detalles[__${iterStat.index}__].cuenta.nombre}"></td>
+            <td>
+                <select th:field="*{detalles[__${iterStat.index}__].cuenta.id}">
+                    <option value="">--Seleccione--</option>
+                    <option th:each="cuenta : ${cuentas}" th:value="${cuenta.id}"
+                            th:text="${cuenta.codigo + ' - ' + cuenta.nombre}"></option>
+                </select>
+            </td>
             <td><input type="number" step="0.01" th:field="*{detalles[__${iterStat.index}__].debe}"></td>
             <td><input type="number" step="0.01" th:field="*{detalles[__${iterStat.index}__].haber}"></td>
         </tr>
@@ -28,6 +52,6 @@
     <button type="submit">Guardar</button>
 </form>
 
-<a th:href="@{/libro-diario}">Volver</a>
+<a th:href="@{/librodiario}">Volver</a>
 </body>
 </html>
