@@ -16,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -64,16 +65,14 @@ public class LibroDiarioController {
     @GetMapping("/nuevo")
     public String nuevoAsiento(Model model) {
         Asiento asiento = new Asiento();
+        asiento.setDetalles(new ArrayList<>());
 
-        // Inicializar 3 detalles vacíos
-        for (int i = 0; i < 3; i++) {
-            asiento.getDetalles().add(new DetalleAsiento());
-        }
+        // Se inicia con 2 filas por defecto (usuario puede agregar más desde el formulario)
+        asiento.getDetalles().add(new DetalleAsiento());
+        asiento.getDetalles().add(new DetalleAsiento());
 
-        List<CuentaContable> cuentas = cuentaRepository.findAll();
         model.addAttribute("asiento", asiento);
-        model.addAttribute("cuentas", cuentas);
-
+        model.addAttribute("cuentas", cuentaRepository.findAll());
         return "libro-diario-form";
     }
 
@@ -82,7 +81,6 @@ public class LibroDiarioController {
     public String guardarAsiento(@ModelAttribute("asiento") Asiento asiento,
                                  BindingResult bindingResult, Model model) {
         try {
-            // Obtener usuario temporal desde DB (ID 1L)
             Usuario usuario = usuarioRepository.findById(1L).orElse(null);
             if (usuario == null) {
                 model.addAttribute("error", "No existe el usuario con ID 1");
@@ -92,16 +90,22 @@ public class LibroDiarioController {
             }
             asiento.setUsuario(usuario);
 
-            // Convertir IDs de cuentas a entidades reales
+            // Filtrar detalles vacíos (que el usuario no llenó)
+            List<DetalleAsiento> detallesValidos = new ArrayList<>();
             for (DetalleAsiento d : asiento.getDetalles()) {
-                if (d.getCuenta() != null && d.getCuenta().getId() != null) {
-                    CuentaContable cuenta = cuentaRepository.findById(d.getCuenta().getId())
-                            .orElse(null);
+                if (d.getCuenta() != null && d.getCuenta().getId() != null &&
+                        (d.getDebe() != null && d.getDebe().doubleValue() > 0 ||
+                                d.getHaber() != null && d.getHaber().doubleValue() > 0)) {
+                    CuentaContable cuenta = cuentaRepository.findById(d.getCuenta().getId()).orElse(null);
                     d.setCuenta(cuenta);
+                    detallesValidos.add(d);
                 }
             }
 
-            // Guardar con validación (Debe = Haber)
+            // Reemplazamos solo los detalles válidos
+            asiento.setDetalles(detallesValidos);
+
+            // Guardar validando balance (Debe = Haber)
             asientoService.guardarAsientoConValidacion(asiento);
 
             return "redirect:/libro-diario?success=Asiento+guardado+correctamente";
@@ -114,6 +118,6 @@ public class LibroDiarioController {
 
         model.addAttribute("asiento", asiento);
         model.addAttribute("cuentas", cuentaRepository.findAll());
-        return "librodiario";
+        return "libro-diario-form";
     }
 }

@@ -3,15 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Libro Diario - Contabix</title>
+
     <link rel="stylesheet" th:href="@{/css/libro-diario-list.css}">
+    <link rel="stylesheet" th:href="@{/css/inicio.css}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+
 <!-- Navbar -->
 <nav class="navbar">
-    <div class="logo"> Contabix</div>
+    <div class="logo">Contabix</div>
     <ul class="nav-links">
         <li><a th:href="@{/inicio}">Inicio</a></li>
         <li><a th:href="@{/admin/usuarios}">Usuarios</a></li>
@@ -23,12 +26,21 @@
 
 <!-- Formulario de filtrado -->
 <form method="get" th:action="@{/libro-diario}">
-    <label>Fecha inicio:</label>
-    <input type="date" name="inicio" th:value="${inicio}">
-    <label>Fecha fin:</label>
-    <input type="date" name="fin" th:value="${fin}">
-    <label>Descripción:</label>
-    <input type="text" name="q" th:value="${q}" placeholder="Buscar...">
+    <div class="form-group">
+        <label>Fecha inicio:</label>
+        <input type="date" name="inicio" th:value="${inicio}">
+    </div>
+
+    <div class="form-group">
+        <label>Fecha fin:</label>
+        <input type="date" name="fin" th:value="${fin}">
+    </div>
+
+    <div class="form-group">
+        <label>Descripción:</label>
+        <input type="text" name="q" th:value="${q}" placeholder="Buscar...">
+    </div>
+
     <button type="submit">Filtrar</button>
 </form>
 
@@ -53,13 +65,17 @@
         <td th:text="${asiento.fecha}"></td>
         <td th:text="${asiento.descripcion}"></td>
         <td th:text="${asiento.usuario != null ? asiento.usuario.nombre : 'N/A'}"></td>
-        <td colspan="3">
-            <table>
+
+        <!-- Subtabla perfectamente alineada -->
+        <td colspan="3" class="sub-cuentas">
+            <table class="tabla-detalle">
+                <tbody>
                 <tr th:each="detalle : ${asiento.detalles}">
-                    <td th:text="${detalle.cuenta != null ? detalle.cuenta.nombre : 'N/A'}"></td>
-                    <td th:text="${#numbers.formatDecimal(detalle.debe, 1, 'COMMA', 2, 'POINT')}"></td>
-                    <td th:text="${#numbers.formatDecimal(detalle.haber, 1, 'COMMA', 2, 'POINT')}"></td>
+                    <td class="cuenta" th:text="${detalle.cuenta != null ? detalle.cuenta.nombre : 'N/A'}"></td>
+                    <td class="debe" th:text="${#numbers.formatDecimal(detalle.debe, 1, 'COMMA', 2, 'POINT')}"></td>
+                    <td class="haber" th:text="${#numbers.formatDecimal(detalle.haber, 1, 'COMMA', 2, 'POINT')}"></td>
                 </tr>
+                </tbody>
             </table>
         </td>
     </tr>
@@ -68,6 +84,10 @@
 
 <!-- Botón nuevo asiento -->
 <a th:href="@{/libro-diario/nuevo}" class="btn">+ Nuevo Asiento</a>
-</body>
 
+<footer>
+    &copy; 2025 Sistema Contable | Todos los derechos reservados
+</footer>
+
+</body>
 </html>
