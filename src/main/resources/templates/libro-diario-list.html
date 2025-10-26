@@ -3,11 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Libro Diario - Contabix</title>
-
     <link rel="stylesheet" th:href="@{/css/libro-diario-list.css}">
     <link rel="stylesheet" th:href="@{/css/inicio.css}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -41,7 +38,8 @@
         <input type="text" name="q" th:value="${q}" placeholder="Buscar...">
     </div>
 
-    <button type="submit">Filtrar</button>
+    <button type="submit">🔍 Filtrar</button>
+    <a th:href="@{/libro-diario}">🔄 Limpiar</a>
 </form>
 
 <!-- Mensajes -->
@@ -58,35 +56,63 @@
         <th>Cuenta</th>
         <th>Debe</th>
         <th>Haber</th>
+        <th>Acciones</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="asiento : ${asientos}">
-        <td th:text="${asiento.fecha}"></td>
-        <td th:text="${asiento.descripcion}"></td>
-        <td th:text="${asiento.usuario != null ? asiento.usuario.nombre : 'N/A'}"></td>
+    <th:block th:each="asiento : ${asientos}">
+        <tr class="asiento-row">
+            <td th:text="${#temporals.format(asiento.fecha, 'dd/MM/yyyy')}"></td>
+            <td th:text="${asiento.descripcion}"></td>
+            <td th:text="${asiento.usuario != null ? asiento.usuario.nombre : 'N/A'}"></td>
 
-        <!-- Subtabla perfectamente alineada -->
-        <td colspan="3" class="sub-cuentas">
-            <table class="tabla-detalle">
-                <tbody>
-                <tr th:each="detalle : ${asiento.detalles}">
-                    <td class="cuenta" th:text="${detalle.cuenta != null ? detalle.cuenta.nombre : 'N/A'}"></td>
-                    <td class="debe" th:text="${#numbers.formatDecimal(detalle.debe, 1, 'COMMA', 2, 'POINT')}"></td>
-                    <td class="haber" th:text="${#numbers.formatDecimal(detalle.haber, 1, 'COMMA', 2, 'POINT')}"></td>
-                </tr>
-                </tbody>
-            </table>
-        </td>
+            <!-- Columna de detalles con las 3 subcolumnas -->
+            <td colspan="3" class="sub-cuentas">
+                <table class="tabla-detalle">
+                    <tbody>
+                    <tr th:each="detalle : ${asiento.detalles}">
+                        <td th:text="${detalle.cuenta != null ? detalle.cuenta.codigo + ' - ' + detalle.cuenta.nombre : 'N/A'}"></td>
+                        <td th:text="${detalle.debe != null && detalle.debe > 0 ? '$' + #numbers.formatDecimal(detalle.debe, 1, 'COMMA', 2, 'POINT') : ''}"></td>
+                        <td th:text="${detalle.haber != null && detalle.haber > 0 ? '$' + #numbers.formatDecimal(detalle.haber, 1, 'COMMA', 2, 'POINT') : ''}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+
+            <td>
+                <div class="acciones">
+                    <a th:href="@{/libro-diario/editar/{id}(id=${asiento.id})}" class="btn-editar">✏️ Editar</a>
+                    <a th:href="@{/libro-diario/eliminar/{id}(id=${asiento.id})}"
+                       class="btn-eliminar"
+                       onclick="return confirm('⚠️ ¿Está seguro de eliminar este asiento?\n\nEsta acción no se puede deshacer.')">🗑️ Eliminar</a>
+                </div>
+            </td>
+        </tr>
+
+        <!-- Fila de totales por asiento -->
+        <tr class="subtotal-row">
+            <td colspan="4">Total Asiento:</td>
+            <td th:text="'$' + ${#numbers.formatDecimal(subtotalDebeMap[asiento.id], 1, 'COMMA', 2, 'POINT')}"></td>
+            <td th:text="'$' + ${#numbers.formatDecimal(subtotalHaberMap[asiento.id], 1, 'COMMA', 2, 'POINT')}"></td>
+            <td></td>
+        </tr>
+    </th:block>
+
+    <!-- Fila de totales generales -->
+    <tr class="total-row">
+        <td colspan="4">TOTAL GENERAL:</td>
+        <td th:text="'$' + ${#numbers.formatDecimal(totalDebe, 1, 'COMMA', 2, 'POINT')}"></td>
+        <td th:text="'$' + ${#numbers.formatDecimal(totalHaber, 1, 'COMMA', 2, 'POINT')}"></td>
+        <td></td>
     </tr>
     </tbody>
 </table>
 
 <!-- Botón nuevo asiento -->
-<a th:href="@{/libro-diario/nuevo}" class="btn">+ Nuevo Asiento</a>
+<a th:href="@{/libro-diario/nuevo}" class="btn">➕ Nuevo Asiento</a>
 
 <footer>
-    &copy; 2025 Sistema Contable | Todos los derechos reservados
+    &copy; 2025 Contabix | Sistema Contable
 </footer>
 
 </body>
