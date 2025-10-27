@@ -38,34 +38,30 @@ public class AuthController {
                            @RequestParam String usuario,
                            @RequestParam String correo,
                            @RequestParam String contrasena,
+                           @RequestParam String esAdmin,
+                           @RequestParam(required = false) String claveAdmin,
                            Model model) {
-
-        // Validar que los campos no estén vacíos
         if (nombre.isBlank() || apellido.isBlank() || correo.isBlank() || contrasena.isBlank()) {
             model.addAttribute("error", "Todos los campos son obligatorios");
-            return "registro"; // Retorna al formulario si falta algún campo
+            return "registro";
         }
 
-        // Validar formato del correo electrónico
         if (!correo.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
             model.addAttribute("error", "Correo inválido");
             return "registro";
         }
 
-        // Validar que la contraseña tenga al menos 6 caracteres
         if (contrasena.length() < 6) {
             model.addAttribute("error", "La contraseña debe tener al menos 6 caracteres");
             return "registro";
         }
 
-        // Verificar si el correo ya está registrado
         if (usuarioService.existsByCorreo(correo)) {
             model.addAttribute("error", "El correo ya está registrado");
             return "registro";
         }
 
         try {
-            // Crear un nuevo objeto Usuario y asignarle los datos del formulario
             Usuario nuevo = new Usuario();
             nuevo.setNombre(nombre);
             nuevo.setApellido(apellido);
@@ -73,18 +69,26 @@ public class AuthController {
             nuevo.setCorreo(correo);
             nuevo.setContrasena(contrasena);
 
-            // Guardar el usuario en la base de datos
-            usuarioService.registrar(nuevo);
+            // Si elige ser administrador, validar clave especial
+            if ("si".equalsIgnoreCase(esAdmin)) {
+                if (!"claveAdminContabix".equals(claveAdmin)) { // clave fija para admin
+                    model.addAttribute("error", "Contraseña de administrador incorrecta");
+                    return "registro";
+                }
+                usuarioService.registrarComoAdmin(nuevo);
+            } else {
+                usuarioService.registrar(nuevo); // Por defecto se registra como auditor
+            }
 
-            // Mensaje de éxito
             model.addAttribute("mensaje", "Usuario registrado correctamente");
-            return "login"; // Redirige al login para que el usuario inicie sesión
+            return "login";
+
         } catch (Exception e) {
-            // Manejo de error si falla el registro
             model.addAttribute("error", "No se pudo registrar el usuario");
             return "registro";
         }
     }
+
 
     // --- Procesar login de usuario ---
     @PostMapping("/login")

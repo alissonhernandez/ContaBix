@@ -50,6 +50,19 @@
                 <label for="contrasena">Contraseña:</label>
                 <input type="password" id="contrasena" name="contrasena" required>
 
+                <!-- Selección de tipo de usuario -->
+                <label>¿Será administrador?</label>
+                <div class="opciones">
+                    <label><input type="radio" name="esAdmin" value="si"> Sí</label>
+                    <label><input type="radio" name="esAdmin" value="no" checked> No</label>
+                </div>
+
+                <!-- Campo que se muestra solo si elige ser admin -->
+                <div id="claveAdminContainer" style="display:none;">
+                    <label for="claveAdmin">Contraseña de administrador:</label>
+                    <input type="password" id="claveAdmin" name="claveAdmin">
+                </div>
+
                 <div class="text">
                     ¿Ya tienes una cuenta? <a th:href="@{/login}">Inicia sesión</a>
                 </div>
@@ -61,6 +74,19 @@
 </div>
 
 <script>
+    // Mostrar/ocultar el campo de contraseña de administrador
+    document.querySelectorAll('input[name="esAdmin"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const container = document.getElementById('claveAdminContainer');
+            if (this.value === 'si') {
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+                document.getElementById('claveAdmin').value = '';
+            }
+        });
+    });
+
     // Auto eliminar notificaciones después de 5 segundos
     setTimeout(() => {
         document.querySelectorAll('.notification').forEach(n => n.remove());
@@ -68,4 +94,3 @@
 </script>
 </body>
 </html>
-

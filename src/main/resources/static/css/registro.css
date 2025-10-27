@@ -15,7 +15,6 @@ body {
     min-height: 100vh;
 }
 
-
 .container {
     display: flex;
     width: 95%;
@@ -147,7 +146,51 @@ input:focus {
     box-shadow: 0 0 6px rgba(35,76,88,0.2);
 }
 
-/* Texto pequeño debajo de los campos */
+/* Sección "¿Será administrador?" */
+.opciones {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: #F3F3F3;
+    border: 1px solid #C9C2C2;
+    border-radius: 8px;
+    padding: 10px 0;
+}
+
+.opciones label {
+    font-weight: 500;
+    color: #234C58;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.opciones input[type="radio"] {
+    accent-color: #234C58;
+    transform: scale(1.2);
+}
+
+/* Campo de contraseña admin */
+#claveAdminContainer {
+    background-color: #F3F3F3;
+    border: 1px solid #C9C2C2;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+#claveAdminContainer label {
+    font-weight: 500;
+    color: #234C58;
+}
+
+#claveAdminContainer input {
+    margin-top: 8px;
+}
+
 .text {
     text-align: center;
     font-size: 14px;

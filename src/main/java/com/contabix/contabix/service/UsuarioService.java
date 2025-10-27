@@ -81,4 +81,16 @@ public class UsuarioService {
     public void eliminarUsuario(Long id) {
         usuarioRepository.deleteById(id);
     }
+
+    public Usuario registrarComoAdmin(Usuario usuario) {
+        String hashedPassword = passwordEncoder.encode(usuario.getContrasena());
+        usuario.setContrasena(hashedPassword);
+
+        Rol rolAdmin = rolRepository.findByNombre("admin")
+                .orElseThrow(() -> new RuntimeException("Rol 'admin' no encontrado"));
+
+        usuario.setRol(rolAdmin);
+        return usuarioRepository.save(usuario);
+    }
+
 }
