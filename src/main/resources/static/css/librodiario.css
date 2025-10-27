@@ -30,11 +30,19 @@
             justify-content: space-between;
             align-items: center;
             background-color: var(--color-secundario);
-            padding: 15px 30px;
+            padding: 10px 20px;
             border-bottom: 2px solid var(--color-acento);
             position: sticky;
             top: 0;
             z-index: 100;
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 28px;
+            color: var(--color-blanco);
+            cursor: pointer;
+            margin-left: auto;
         }
 
         .navbar .logo {
@@ -175,5 +183,29 @@
 
             th, td {
                 padding: 10px;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+                max-height: 0;
+                overflow: hidden;
+                background-color: rgba(35,76,88,0.95);
+                transition: max-height 0.3s ease-in-out;
+            }
+
+            .nav-links.active {
+                max-height: 300px;
+            }
+
+            .nav-links li {
+                margin: 10px 0;
+                text-align: center;
+            }
+
+            .hamburger {
+                display: block;
             }
         }
