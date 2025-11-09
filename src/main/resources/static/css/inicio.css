@@ -27,7 +27,7 @@ body {
 ================================ */
 .sidebar {
     width: 260px;
-    background: #0f172a;
+    background: #0f172a; /* Azul oscuro */
     color: #ffffff;
     display: flex;
     flex-direction: column;
@@ -42,22 +42,16 @@ body {
 }
 
 .avatar-circle {
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
-    overflow: hidden;
-    background: #1d4ed8;
+    background: #1d4ed8; /* Azul fuerte */
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-right: 1rem;
+    font-size: 1.4rem;
 }
-
-.avatar-circle img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
 
 .user-info h2 {
     font-size: 1rem;
@@ -124,16 +118,6 @@ body {
 .sidebar-footer a i {
     margin-right: 0.5rem;
 }
-
-.sidebar-nav li.logout a {
-    color: #f87171;
-    font-weight: 600;
-}
-
-.sidebar-nav li.logout a:hover {
-    background: rgba(248, 113, 113, 0.2);
-}
-
 
 /* ================================
    MENÚ MÓVIL
