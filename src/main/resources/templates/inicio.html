@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio - Contabix</title>
+    <link rel="stylesheet" th:href="@{/css/inicio.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="dashboard">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="avatar-circle">
+                <img th:src="@{/img/defaultuser.png}" alt="Foto de usuario">
+            </div>
+            <div class="user-info">
+                <h2 th:text="${usuario.nombre}">Usuario</h2>
+                <p th:text="${usuario.correo}">usuario@correo.com</p>
+                <span class="user-role" th:text="${usuario.rol.nombre}">Rol</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="active">
+                    <a th:href="@{/inicio}">
+                        <i class="fas fa-home"></i>
+                        <span>Inicio</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/perfil}">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Perfil</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/librodiario}">
+                        <i class="fas fa-book-open"></i>
+                        <span>Libro Diario</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/libro-mayor}">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Libro Mayor</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/documentos}">
+                        <i class="fas fa-file-invoice"></i>
+                        <span>Documentos Fuente</span>
+                    </a>
+                </li>
+                <li th:if="${usuario.rol.nombre == 'admin'}">
+                    <a th:href="@{/admin/usuarios}">
+                        <i class="fas fa-users-cog"></i>
+                        <span>Gestión de Usuarios</span>
+                    </a>
+                </li>
+                <li class="logout">
+                    <a th:href="@{/logout}">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Cerrar Sesión</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+
+        <!-- BOTÓN DE MENÚ MÓVIL -->
+        <button class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- SECCIÓN EMPRESA -->
+        <section class="empresa-info">
+            <div class="empresa-logo">
+                <img th:src="@{/img/contabixlogo.png}" alt="Logo Contabix">
+            </div>
+
+            <div class="empresa-descripcion">
+                <h1>Bienvenido a Contabix</h1>
+                <p>
+                    <strong>Contabix</strong> es una plataforma diseñada para optimizar la gestión contable de su empresa.
+                    Permite administrar fácilmente el <em>Libro Diario</em>, el <em>Libro Mayor</em> y los <em>Documentos Fuente</em>,
+                    garantizando orden, transparencia y eficiencia en todos sus procesos financieros.
+                </p>
+                <p>
+                    Nuestro sistema está enfocado en la precisión de los datos y la comodidad del usuario, ofreciendo una
+                    interfaz moderna y amigable para contadores, administradores y propietarios de negocios.
+                </p>
+            </div>
+        </section>
+
+        <footer class="main-footer">
+            <p>&copy; 2025 Contabix. Todos los derechos reservados.</p>
+        </footer>
+    </main>
+</div>
+
+<script>
+    // Menú lateral para pantallas pequeñas
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    menuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('sidebar-open');
+    });
+</script>
+
+</body>
+</html>

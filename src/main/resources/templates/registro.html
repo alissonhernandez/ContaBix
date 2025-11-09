@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro - Contabix</title>
+    <link rel="stylesheet" th:href="@{/css/registro.css}">
+</head>
+<body>
+<!-- Notificaciones flotantes -->
+<div id="notifications">
+    <div th:if="${error}" class="notification error">
+        <span th:text="${error}"></span>
+    </div>
+    <div th:if="${mensaje}" class="notification success">
+        <span th:text="${mensaje}"></span>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Panel izquierdo -->
+    <div class="left-panel">
+        <img th:src="@{/img/contabixlogo.png}" alt="Logo Contabix">
+        <h1>CONTABIX</h1>
+        <p>Del control contable al éxito empresarial.</p>
+    </div>
+
+    <!-- Panel derecho -->
+    <div class="right-panel">
+        <div class="form-container">
+            <h2>Registro de usuario</h2>
+
+            <form th:action="@{/registro}" method="post">
+                <div class="row">
+                    <div class="field">
+                        <label for="nombre">Nombre:</label>
+                        <input type="text" id="nombre" name="nombre" required>
+                    </div>
+                    <div class="field">
+                        <label for="apellido">Apellido:</label>
+                        <input type="text" id="apellido" name="apellido" required>
+                    </div>
+                </div>
+
+                <label for="usuario">Usuario:</label>
+                <input type="text" id="usuario" name="usuario" required>
+
+                <label for="correo">Correo:</label>
+                <input type="email" id="correo" name="correo" required>
+
+                <label for="contrasena">Contraseña:</label>
+                <input type="password" id="contrasena" name="contrasena" required>
+
+                <!-- Selección de tipo de usuario -->
+                <label>¿Será administrador?</label>
+                <div class="opciones">
+                    <label><input type="radio" name="esAdmin" value="si"> Sí</label>
+                    <label><input type="radio" name="esAdmin" value="no" checked> No</label>
+                </div>
+
+                <!-- Campo que se muestra solo si elige ser admin -->
+                <div id="claveAdminContainer" style="display:none;">
+                    <label for="claveAdmin">Contraseña de administrador:</label>
+                    <input type="password" id="claveAdmin" name="claveAdmin">
+                </div>
+
+                <div class="text">
+                    ¿Ya tienes una cuenta? <a th:href="@{/login}">Inicia sesión</a>
+                </div>
+
+                <button type="submit">Registrar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Mostrar/ocultar el campo de contraseña de administrador
+    document.querySelectorAll('input[name="esAdmin"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const container = document.getElementById('claveAdminContainer');
+            if (this.value === 'si') {
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+                document.getElementById('claveAdmin').value = '';
+            }
+        });
+    });
+
+    // Auto eliminar notificaciones después de 5 segundos
+    setTimeout(() => {
+        document.querySelectorAll('.notification').forEach(n => n.remove());
+    }, 5000);
+</script>
+</body>
+</html>

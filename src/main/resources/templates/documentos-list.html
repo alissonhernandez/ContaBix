@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Documentos Fuente - Contabix</title>
+    <link rel="stylesheet" th:href="@{/css/inicio.css}">
+    <link rel="stylesheet" th:href="@{/css/libro-diario-list.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo">Contabix</div>
+    <div class="hamburger" id="hamburger">&#9776;</div>
+    <ul class="nav-links" id="nav-links">
+        <li><a th:href="@{/inicio}">Inicio</a></li>
+        <li><a th:href="@{/perfil}">Perfil</a></li>
+        <li><a th:href="@{/libro-diario}">Libro Diario</a></li>
+        <li><a th:href="@{/libro-mayor}">Libro Mayor</a></li>
+        <li><a th:href="@{/documentos}" class="active">Documentos Fuente</a></li>
+        <li><a th:href="@{/admin/usuarios}">Gestión de Usuarios</a></li>
+        <li><a th:href="@{/logout}">Cerrar sesión</a></li>
+    </ul>
+</nav>
+
+<main>
+    <h1>Documentos Fuente</h1>
+
+    <div th:if="${success}" class="alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert-danger" th:text="${error}"></div>
+
+    <div class="tabla-libro-diario-wrapper">
+        <table class="tabla-libro-diario">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre archivo</th>
+                <th>Descripción</th>
+                <th>Fecha subida</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="doc : ${documentos}">
+                <td th:text="${doc.id}"></td>
+                <td th:text="${doc.nombreArchivo}"></td>
+                <td th:text="${doc.descripcion}"></td>
+                <td th:text="${#temporals.format(doc.fechaSubida, 'dd/MM/yyyy HH:mm')}"></td>
+                <td>
+                    <a th:href="@{'/documentos/' + ${doc.id} + '/descargar'}" class="btn-accion ver">Descargar</a>
+                    <a th:href="@{'/documentos/' + ${doc.id} + '/eliminar'}"
+                       class="btn-accion eliminar"
+                       onclick="return confirm('¿Seguro que deseas eliminar este documento?');">
+                        Eliminar
+                    </a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(documentos)}">
+                <td colspan="5" style="text-align:center; padding:15px;">
+                    No hay documentos registrados.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div style="text-align:center;">
+        <a th:href="@{/documentos/nuevo}" class="btn">+ Nuevo Documento</a>
+    </div>
+</main>
+
+<footer>
+    &copy; 2025 Contabix | Sistema Contable
+</footer>
+
+<script>
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+    });
+</script>
+
+</body>
+</html>

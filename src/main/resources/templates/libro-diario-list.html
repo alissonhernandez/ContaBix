@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Libro Diario - Contabix</title>
+    <link rel="stylesheet" th:href="@{/css/libro-diario-list.css}">
+    <link rel="stylesheet" th:href="@{/css/inicio.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <div class="logo">Contabix</div>
+    <div class="hamburger" id="hamburger">&#9776;</div>
+    <ul class="nav-links" id="nav-links">
+        <li><a th:href="@{/inicio}">Inicio</a></li>
+        <li><a th:href="@{/perfil}">Perfil</a></li>
+        <li><a th:href="@{/libro-diario}" class="active">Libro Diario</a></li>
+        <li><a th:href="@{/libro-mayor}">Libro Mayor</a></li>
+        <li><a th:href="@{/admin/usuarios}">Gestión de Usuarios</a></li>
+        <li><a th:href="@{/logout}">Cerrar sesión</a></li>
+    </ul>
+</nav>
+
+<!-- Formulario de filtrado -->
+<form method="get" th:action="@{/libro-diario}">
+    <div class="form-group">
+        <label>Fecha inicio:</label>
+        <input type="date" name="inicio" th:value="${inicio}">
+    </div>
+
+    <div class="form-group">
+        <label>Fecha fin:</label>
+        <input type="date" name="fin" th:value="${fin}">
+    </div>
+
+    <div class="form-group">
+        <label>Descripción:</label>
+        <input type="text" name="q" th:value="${q}" placeholder="Buscar...">
+    </div>
+
+    <button type="submit">🔍 Filtrar</button>
+    <a th:href="@{/libro-diario}">🔄 Limpiar</a>
+</form>
+
+<!-- Mensajes -->
+<div th:if="${success}" class="alert-success" th:text="${success}"></div>
+<div th:if="${error}" class="alert-danger" th:text="${error}"></div>
+
+<!-- Tabla de Asientos -->
+<table>
+    <thead>
+    <tr>
+        <th>Fecha</th>
+        <th>Descripción</th>
+        <th>Usuario</th>
+        <th>Cuenta</th>
+        <th>Debe</th>
+        <th>Haber</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <th:block th:each="asiento : ${asientos}">
+        <tr class="asiento-row">
+            <td th:text="${#temporals.format(asiento.fecha, 'dd/MM/yyyy')}"></td>
+            <td th:text="${asiento.descripcion}"></td>
+            <td th:text="${asiento.usuario != null ? asiento.usuario.nombre : 'N/A'}"></td>
+
+            <!-- Columna de detalles con las 3 subcolumnas -->
+            <td colspan="3" class="sub-cuentas">
+                <table class="tabla-detalle">
+                    <tbody>
+                    <tr th:each="detalle : ${asiento.detalles}">
+                        <td th:text="${detalle.cuenta != null ? detalle.cuenta.codigo + ' - ' + detalle.cuenta.nombre : 'N/A'}"></td>
+                        <td th:text="${detalle.debe != null && detalle.debe > 0 ? '$' + #numbers.formatDecimal(detalle.debe, 1, 'COMMA', 2, 'POINT') : ''}"></td>
+                        <td th:text="${detalle.haber != null && detalle.haber > 0 ? '$' + #numbers.formatDecimal(detalle.haber, 1, 'COMMA', 2, 'POINT') : ''}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+
+            <td>
+                <div class="acciones">
+                    <a th:href="@{/libro-diario/editar/{id}(id=${asiento.id})}" class="btn-editar">✏️ Editar</a>
+                    <a th:href="@{/libro-diario/eliminar/{id}(id=${asiento.id})}"
+                       class="btn-eliminar"
+                       onclick="return confirm('⚠️ ¿Está seguro de eliminar este asiento?\n\nEsta acción no se puede deshacer.')">🗑️ Eliminar</a>
+                </div>
+            </td>
+        </tr>
+
+        <!-- Fila de totales por asiento -->
+        <tr class="subtotal-row">
+            <td colspan="4">Total Asiento:</td>
+            <td th:text="'$' + ${#numbers.formatDecimal(subtotalDebeMap[asiento.id], 1, 'COMMA', 2, 'POINT')}"></td>
+            <td th:text="'$' + ${#numbers.formatDecimal(subtotalHaberMap[asiento.id], 1, 'COMMA', 2, 'POINT')}"></td>
+            <td></td>
+        </tr>
+    </th:block>
+
+    <!-- Fila de totales generales -->
+    <tr class="total-row">
+        <td colspan="4">TOTAL GENERAL:</td>
+        <td th:text="'$' + ${#numbers.formatDecimal(totalDebe, 1, 'COMMA', 2, 'POINT')}"></td>
+        <td th:text="'$' + ${#numbers.formatDecimal(totalHaber, 1, 'COMMA', 2, 'POINT')}"></td>
+        <td></td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Botón nuevo asiento -->
+<a th:href="@{/libro-diario/nuevo}" class="btn">➕ Nuevo Asiento</a>
+
+<footer>
+    &copy; 2025 Contabix | Sistema Contable
+</footer>
+<!-- Script menú hamburguesa -->
+<script>
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,296 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+* {
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: radial-gradient(circle at top left, #234C58, #0F1516);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    display: flex;
+    width: 95%;
+    max-width: 1100px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    background-color: #F9F9F9;
+}
+
+/* Panel izquierdo */
+.left-panel {
+    background: linear-gradient(150deg, #234C58, #5E524B);
+    color: #EAEAEA;
+    width: 45%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 40px;
+    text-align: center;
+    position: relative;
+}
+
+.left-panel img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+    border: 3px solid #EAEAEA;
+    object-fit: cover;
+    box-shadow: 0 0 10px rgba(255,255,255,0.3);
+}
+
+.left-panel h1 {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+.left-panel p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    max-width: 320px;
+    color: #D8D8D8;
+}
+
+.left-panel a {
+    background-color: #C9C2C2;
+    color: #234C58;
+    text-decoration: none;
+    padding: 12px 35px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+
+.left-panel a:hover {
+    background-color: #7F8C94;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Panel derecho */
+.right-panel {
+    width: 55%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 40px;
+    background-color: #F9F9F9;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 450px;
+    background: #FFFFFF;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+}
+
+/* Títulos */
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #234C58;
+    font-weight: 600;
+}
+
+/* Campos lado a lado (Nombre y Apellido) */
+.row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.row .field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.row .field input {
+    width: 100%;
+}
+
+/* Estilos de campos */
+label {
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #234C58;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #C9C2C2;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    outline: none;
+    background-color: #F3F3F3;
+    transition: all 0.3s;
+}
+
+input:focus {
+    border-color: #234C58;
+    background-color: #FFFFFF;
+    box-shadow: 0 0 6px rgba(35,76,88,0.2);
+}
+
+/* Sección "¿Será administrador?" */
+.opciones {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: #F3F3F3;
+    border: 1px solid #C9C2C2;
+    border-radius: 8px;
+    padding: 10px 0;
+}
+
+.opciones label {
+    font-weight: 500;
+    color: #234C58;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.opciones input[type="radio"] {
+    accent-color: #234C58;
+    transform: scale(1.2);
+}
+
+/* Campo de contraseña admin */
+#claveAdminContainer {
+    background-color: #F3F3F3;
+    border: 1px solid #C9C2C2;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+#claveAdminContainer label {
+    font-weight: 500;
+    color: #234C58;
+}
+
+#claveAdminContainer input {
+    margin-top: 8px;
+}
+
+.text {
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.text a {
+    color: #234C58;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.text a:hover {
+    text-decoration: underline;
+}
+
+/* Botón */
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #234C58, #5E524B);
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(90deg, #5E524B, #234C58);
+}
+
+/* Mensajes */
+.message {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.error { color: #E74C3C; }
+.success { color: #27AE60; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .container {
+        flex-direction: column;
+        width: 90%;
+    }
+    .left-panel, .right-panel {
+        width: 100%;
+        padding: 30px 20px;
+    }
+    .row {
+        flex-direction: column;
+    }
+}
+
+/* Contenedor general */
+#notifications {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 9999;
+}
+
+/* Tarjetas flotantes */
+.notification {
+    position: relative;
+    padding: 15px 40px 15px 20px;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.4s ease, fadeOut 0.4s ease 4.5s forwards;
+    opacity: 1;
+}
+
+/* Colores */
+.notification.error {
+    background-color: #d9534f; /* rojo */
+}
+
+.notification.success {
+    background-color: #5cb85c; /* verde */
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; transform: translateY(-10px); }
+}
+

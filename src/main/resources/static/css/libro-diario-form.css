@@ -1,0 +1,294 @@
+/* ===== Fondo general ===== */
+body {
+  background: #f2f6fc;
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== Contenedor del formulario ===== */
+.asiento-form {
+  background: #fff;
+  width: 1100px;
+  margin: 40px auto;
+  padding: 30px 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+
+.asiento-form h2 {
+  color: #1d4e89;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+}
+
+/* ===== Grupos de formulario ===== */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  color: #1d4e89;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.form-group input[type="date"],
+.form-group input[type="text"] {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ccd6e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+  transition: border 0.2s ease;
+}
+
+.form-group input:focus {
+  border-color: #1d4e89;
+  outline: none;
+}
+
+/* ===== Sección de tabla ===== */
+.table-section {
+  margin-top: 30px;
+}
+
+.table-section h3 {
+  color: #1d4e89;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+/* ===== Tabla de detalles ===== */
+.tabla-asiento {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.tabla-asiento thead {
+  background: #1d4e89;
+  color: #fff;
+}
+
+.tabla-asiento th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.tabla-asiento th:nth-child(1) {
+  width: 45%;
+}
+
+.tabla-asiento th:nth-child(2),
+.tabla-asiento th:nth-child(3) {
+  width: 22%;
+}
+
+.tabla-asiento th:nth-child(4) {
+  width: 11%;
+  text-align: center;
+}
+
+.tabla-asiento tbody td {
+  padding: 10px;
+  border-bottom: 1px solid #e5eaf1;
+  vertical-align: middle;
+}
+
+.tabla-asiento tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ===== Selects y inputs de la tabla ===== */
+.sel-cuenta {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccd6e0;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+}
+
+.input-money {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccd6e0;
+  border-radius: 6px;
+  padding: 4px 8px;
+  background: #fff;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input-money span {
+  color: #1d4e89;
+  font-weight: 600;
+  margin-right: 5px;
+}
+
+.input-money input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+  padding: 4px;
+  text-align: right;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ===== Botón agregar fila ===== */
+.btn-add {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.btn-add:hover {
+  background: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+}
+
+/* ===== Botón eliminar fila ===== */
+.btn-eliminar-fila {
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+.btn-eliminar-fila:hover {
+  background: #da190b;
+  transform: scale(1.05);
+}
+
+/* ===== Botones de acción del formulario ===== */
+.form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.btn-guardar,
+.btn-cancelar {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.btn-guardar {
+  background: #4CAF50;
+  color: white;
+}
+
+.btn-guardar:hover {
+  background: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.btn-cancelar {
+  background: #757575;
+  color: white;
+}
+
+.btn-cancelar:hover {
+  background: #616161;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(117, 117, 117, 0.3);
+}
+
+/* ===== Choices.js override ===== */
+.choices {
+  margin-bottom: 0;
+}
+
+.choices__inner {
+  border: 1px solid #ccd6e0;
+  border-radius: 6px;
+  min-height: 36px;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+}
+
+.choices__list--dropdown {
+  border-radius: 6px;
+  border: 1px solid #ccd6e0;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1150px) {
+  .asiento-form {
+    width: 95%;
+  }
+}
+
+@media (max-width: 768px) {
+  .tabla-asiento {
+    font-size: 0.85rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .btn-guardar,
+  .btn-cancelar {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+        max-height: 0;
+        overflow: hidden;
+        background-color: rgba(35,76,88,0.95);
+        transition: max-height 0.3s ease-in-out;
+    }
+
+    .nav-links.active {
+        max-height: 300px;
+    }
+
+    .nav-links li {
+        margin: 10px 0;
+        text-align: center;
+    }
+
+    .hamburger {
+        display: block;
+    }
+}

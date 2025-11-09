@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Libro Diario - Contabix</title>
+    <link rel="stylesheet" th:href="@{/css/inicio.css}">
+    <link rel="stylesheet" th:href="@{/css/librodiario.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/librodiario.css}">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">Contabix</div>
+    <div class="hamburger" id="hamburger">&#9776;</div>
+    <ul class="nav-links" id="nav-links">
+        <li><a th:href="@{/inicio}">Inicio</a></li>
+        <li><a th:href="@{/perfil}">Perfil</a></li>
+        <li><a th:href="@{/libro-diario}">Libro Diario</a></li>
+        <li><a th:href="@{/libro-mayor}">Libro Mayor</a></li>
+        <li><a th:href="@{/admin/usuarios}">Gestión de Usuarios</a></li>
+        <li><a th:href="@{/logout}">Cerrar sesión</a></li>
+    </ul>
+</nav>
+
+<main>
+    <h1>Libro Diario</h1>
+
+    <!-- Filtros de búsqueda -->
+    <div style="background-color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+        <form method="get" th:action="@{/libro-diario}">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 2fr auto auto; gap: 15px; align-items: end;">
+                <div>
+                    <label style="display: block; margin-bottom: 5px; color: #0F1516; font-weight: bold;">Fecha inicio:</label>
+                    <input type="date" name="fechaInicio" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; color: #0F1516; font-weight: bold;">Fecha fin:</label>
+                    <input type="date" name="fechaFin" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; color: #0F1516; font-weight: bold;">Descripción:</label>
+                    <input type="text" name="descripcion" placeholder="Buscar..." style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
+                </div>
+                <button type="submit" style="padding: 10px 20px; background-color: #234C58; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">🔍 Filtrar</button>
+                <button type="button" onclick="window.location.href='/libro-diario'" style="padding: 10px 20px; background-color: #7F8C94; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">🔄Limpiar</button>
+            </div>
+        </form>
+    </div>
+
+    <div th:if="${exito}" class="alert alert-success" th:text="${exito}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Descripción</th>
+            <th>Usuario</th>
+            <th>Cuenta</th>
+            <th>Debe</th>
+            <th>Haber</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="asiento : ${asientos}">
+            <td th:text="${asiento.fecha}"></td>
+            <td th:text="${asiento.descripcion}"></td>
+            <td th:text="${asiento.usuario != null ? asiento.usuario.username : ''}"></td>
+            <td th:text="${asiento.cuenta != null ? asiento.cuenta.nombre : ''}"></td>
+            <td th:text="${#numbers.formatDecimal(asiento.debe, 1, 2)}"></td>
+            <td th:text="${#numbers.formatDecimal(asiento.haber, 1, 2)}"></td>
+            <td>
+                <a th:href="@{/libro-diario/editar/{id}(id=${asiento.id})}" style="color: #234C58; margin-right: 10px;">✏️</a>
+                <a th:href="@{/libro-diario/eliminar/{id}(id=${asiento.id})}" onclick="return confirm('¿Está seguro de eliminar este asiento?')" style="color: #dc3545;">🗑️</a>
+            </td>
+        </tr>
+        <!-- Fila de totales -->
+        <tr style="font-weight: bold; background-color: #f8f9fa;">
+            <td colspan="4" style="text-align: right;">TOTAL GENERAL:</td>
+            <td>$0.00</td>
+            <td>$0.00</td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div style="text-align:center;">
+        <a th:href="@{/libro-diario/nuevo}" class="btn">➕ Nuevo Asiento</a>
+    </div>
+</main>
+
+<footer>
+    &copy; 2025 Contabix | Sistema Contable
+</footer>
+
+<!-- Script menú hamburguesa -->
+<script>
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+    });
+</script>
+</body>
+</html>
