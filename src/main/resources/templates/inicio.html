@@ -17,7 +17,11 @@
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="avatar-circle">
-                <img th:src="@{/img/defaultuser.png}" alt="Foto de usuario">
+                <img th:src="${#strings.isEmpty(usuario.foto) ? '/img/defaultuser.png' : '/uploads/' + usuario.foto}"
+                     alt="Foto de usuario">
+                <img th:if="${!#strings.isEmpty(usuario.foto)}"
+                     th:src="@{/uploads/{archivo}(archivo=${usuario.foto})}"
+                     alt="Foto de usuario">
             </div>
             <div class="user-info">
                 <h2 th:text="${usuario.nombre}">Usuario</h2>

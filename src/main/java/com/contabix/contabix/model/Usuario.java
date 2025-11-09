@@ -77,4 +77,15 @@ public class Usuario {
 
     // Asigna un rol al usuario
     public void setRol(Rol rol) { this.rol = rol; }
+
+    // Foto de perfil (nombre del archivo almacenado)
+    private String foto;
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
 }

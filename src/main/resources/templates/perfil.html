@@ -1,53 +1,178 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Perfil - Contabix</title>
+    <link rel="stylesheet" th:href="@{/css/inicio.css}">
     <link rel="stylesheet" th:href="@{/css/perfil.css}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<!-- Navbar -->
-<nav class="navbar">
-    <div class="logo">Contabix</div>
-    <div class="hamburger" id="hamburger">&#9776;</div>
-    <ul class="nav-links" id="nav-links">
-        <li><a th:href="@{/inicio}">Inicio</a></li>
-        <li><a th:href="@{/perfil}">Perfil</a></li>
-        <li><a th:href="@{/libro-diario}">Libro Diario</a></li>
-        <li><a th:href="@{/libro-mayor}">Libro Mayor</a></li>
-        <li th:if="${usuario.rol.nombre == 'admin'}"><a th:href="@{/admin/usuarios}">Gestión de Usuarios</a></li>
-        <li><a th:href="@{/logout}">Cerrar Sesión</a></li>
-    </ul>
-</nav>
 
-<!-- Título -->
-<h2>Perfil de usuario</h2>
+<div class="dashboard">
 
-<!-- Tarjeta de perfil -->
-<div class="perfil-container">
-    <div class="card">
-        <img th:src="@{/img/defaultuser.png}" alt="Foto de perfil">
-        <h3 th:text="${usuario.nombre} + ' ' + ${usuario.apellido}"></h3>
-        <p th:text="'Usuario: ' + ${usuario.usuario}"></p>
-        <p th:text="'Correo: ' + ${usuario.correo}"></p>
-        <p th:text="'Rol: ' + ${usuario.rol.nombre}"></p>
-        <a th:href="@{/inicio}" class="btn">Inicio</a>
-    </div>
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="avatar-circle">
+                <img th:src="${#strings.isEmpty(usuario.foto) ? '/img/defaultuser.png' : '/uploads/' + usuario.foto}"
+                     alt="Foto de usuario">
+                <img th:if="${!#strings.isEmpty(usuario.foto)}"
+                     th:src="@{/uploads/{archivo}(archivo=${usuario.foto})}"
+                     alt="Foto de usuario">
+            </div>
+            <div class="user-info">
+                <h2 th:text="${usuario.nombre}">Usuario</h2>
+                <p th:text="${usuario.correo}">usuario@correo.com</p>
+                <span class="user-role" th:text="${usuario.rol.nombre}">Rol</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li>
+                    <a th:href="@{/inicio}">
+                        <i class="fas fa-home"></i>
+                        <span>Inicio</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a th:href="@{/perfil}">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Perfil</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/librodiario}">
+                        <i class="fas fa-book-open"></i>
+                        <span>Libro Diario</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/libromayor}">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Libro Mayor</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/documentos}">
+                        <i class="fas fa-file-invoice"></i>
+                        <span>Documentos Fuente</span>
+                    </a>
+                </li>
+                <li th:if="${usuario.rol.nombre == 'admin'}">
+                    <a th:href="@{/admin/usuarios}">
+                        <i class="fas fa-users-cog"></i>
+                        <span>Gestión de Usuarios</span>
+                    </a>
+                </li>
+                <li class="logout">
+                    <a th:href="@{/logout}">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Cerrar Sesión</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+
+        <!-- Botón menú móvil -->
+        <button class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <h1 class="perfil-titulo">Perfil de Usuario</h1>
+
+        <section class="perfil-layout">
+            <!-- Columna izquierda: tarjeta de detalle -->
+            <div class="perfil-card">
+                <div class="avatar-perfil">
+                    <img th:if="${#strings.isEmpty(usuario.foto)}"
+                         th:src="@{/img/defaultuser.png}"
+                         alt="Foto de usuario">
+
+                    <img th:if="${!#strings.isEmpty(usuario.foto)}"
+                         th:src="@{/uploads/{archivo}(archivo=${usuario.foto})}"
+                         alt="Foto de usuario">
+                </div>
+
+                <h2 th:text="${usuario.nombre + ' ' + usuario.apellido}">Nombre Apellido</h2>
+                <p th:text="'Usuario: ' + ${usuario.usuario}"></p>
+                <p th:text="'Correo: ' + ${usuario.correo}"></p>
+                <p th:text="'Rol: ' + ${usuario.rol.nombre}"></p>
+            </div>
+
+            <!-- Columna derecha: formulario de edición -->
+            <div class="perfil-form-card">
+                <h3>Editar información</h3>
+
+                <form th:action="@{/perfil/actualizar}" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="id" th:value="${usuario.id}"/>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="nombre">Nombre</label>
+                            <input id="nombre" name="nombre" type="text"
+                                   th:value="${usuario.nombre}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="apellido">Apellido</label>
+                            <input id="apellido" name="apellido" type="text"
+                                   th:value="${usuario.apellido}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="usuario">Usuario</label>
+                            <input id="usuario" name="usuarioNombre" type="text"
+                                   th:value="${usuario.usuario}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="correo">Correo</label>
+                            <input id="correo" name="correo" type="email"
+                                   th:value="${usuario.correo}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contrasenaNueva">Contraseña nueva (opcional)</label>
+                        <input id="contrasenaNueva" name="contrasenaNueva" type="password"
+                               placeholder="Dejar vacío para no cambiar">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="foto">Foto de perfil (opcional)</label>
+                        <input id="foto" name="foto" type="file" accept="image/*">
+                        <small>Si no eliges archivo se mantiene la actual.</small>
+                    </div>
+
+                    <button type="submit" class="btn-guardar">Guardar cambios</button>
+                </form>
+            </div>
+        </section>
+
+        <footer class="main-footer">
+            <p>&copy; 2025 Contabix. Todos los derechos reservados.</p>
+        </footer>
+    </main>
 </div>
 
-<!-- Footer -->
-<footer>
-    <p>&copy; 2025 Contabix. Todos los derechos reservados.</p>
-</footer>
-
-<!-- Script menú hamburguesa -->
 <script>
-    const hamburger = document.getElementById('hamburger');
-    const navLinks = document.getElementById('nav-links');
-    hamburger.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    menuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('sidebar-open');
     });
 </script>
 </body>
 </html>
+
 

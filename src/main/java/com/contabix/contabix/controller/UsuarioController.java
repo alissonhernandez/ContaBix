@@ -8,6 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
 
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
@@ -146,4 +155,64 @@ public class UsuarioController {
         }
         return "redirect:/admin/usuarios";
     }
+
+    @PostMapping("/perfil/actualizar")
+    public String actualizarPerfil(@RequestParam Long id,
+                                   @RequestParam String nombre,
+                                   @RequestParam String apellido,
+                                   @RequestParam String usuarioNombre,
+                                   @RequestParam String correo,
+                                   @RequestParam(required = false) String contrasenaNueva,
+                                   @RequestParam(required = false) MultipartFile foto,
+                                   HttpSession session) throws IOException {
+
+        Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
+        if (usuarioSesion == null) {
+            return "redirect:/login";
+        }
+
+        // Por seguridad, solo permite que el usuario edite su propio perfil
+        if (!usuarioSesion.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+
+        Usuario usuario = usuarioRepository.findById(id).orElse(null);
+        if (usuario == null) {
+            return "redirect:/inicio";
+        }
+
+        usuario.setNombre(nombre);
+        usuario.setApellido(apellido);
+        usuario.setUsuario(usuarioNombre);
+        usuario.setCorreo(correo);
+
+        // Cambiar contraseña solo si se envía algo
+        if (contrasenaNueva != null && !contrasenaNueva.isBlank()) {
+            usuario.setContrasena(contrasenaNueva);
+        }
+
+        // Guardar foto si se envió
+        if (foto != null && !foto.isEmpty()) {
+            String uploadsDir = "src/main/resources/static/uploads";
+            Path uploadPath = Paths.get(uploadsDir);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            String fileName = usuario.getId() + "_" + foto.getOriginalFilename();
+            try (InputStream inputStream = foto.getInputStream()) {
+                Files.copy(inputStream, uploadPath.resolve(fileName),
+                        StandardCopyOption.REPLACE_EXISTING);
+            }
+            usuario.setFoto(fileName);
+        }
+
+        usuarioRepository.save(usuario);
+
+        // Actualizar el usuario en sesión con los nuevos datos
+        session.setAttribute("usuario", usuario);
+
+        return "redirect:/perfil";
+    }
+
 }
