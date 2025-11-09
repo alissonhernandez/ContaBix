@@ -13,6 +13,15 @@
 </head>
 <body>
 
+<div id="notifications">
+    <div th:if="${error}" class="notification error">
+        <span th:text="${error}"></span>
+    </div>
+    <div th:if="${mensaje}" class="notification success">
+        <span th:text="${mensaje}"></span>
+    </div>
+</div>
+
 <div class="dashboard">
 
     <!-- SIDEBAR -->
@@ -162,6 +171,24 @@
         sidebar.classList.toggle('sidebar-open');
     });
 </script>
+
+<script>
+    // Auto eliminar notificaciones después de 5 segundos
+    setTimeout(() => {
+        document.querySelectorAll('.notification').forEach(n => n.remove());
+    }, 5000);
+
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('sidebar-open');
+        });
+    }
+</script>
+</body>
+</html>
+
 
 </body>
 </html>

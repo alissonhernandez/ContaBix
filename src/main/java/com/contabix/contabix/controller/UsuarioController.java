@@ -4,11 +4,13 @@ import com.contabix.contabix.model.Rol;
 import com.contabix.contabix.model.Usuario;
 import com.contabix.contabix.repository.RolRepository;
 import com.contabix.contabix.repository.UsuarioRepository;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,9 +18,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-
-
-import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -67,10 +66,7 @@ public class UsuarioController {
         return "perfil"; // Reutiliza la vista perfil.html
     }
 
-    /**
-     * Mostrar la página del Libro Diario.
-     * Solo accesible si hay usuario en sesión.
-     */
+    /** Libro Diario */
     @GetMapping("/librodiario")
     public String libroDiario(HttpSession session) {
         if (session.getAttribute("usuario") == null) {
@@ -79,10 +75,7 @@ public class UsuarioController {
         return "librodiario";
     }
 
-    /**
-     * Mostrar la página del Libro Mayor.
-     * Solo accesible si hay usuario en sesión.
-     */
+    /** Libro Mayor */
     @GetMapping("/libromayor")
     public String libroMayor(HttpSession session) {
         if (session.getAttribute("usuario") == null) {
@@ -121,20 +114,28 @@ public class UsuarioController {
     @PostMapping("/admin/usuarios/{id}/rol")
     public String cambiarRol(@PathVariable Long id,
                              @RequestParam Long rolId,
-                             HttpSession session) {
+                             HttpSession session,
+                             RedirectAttributes redirectAttributes) {
+
         Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
         if (usuarioSesion == null || !usuarioSesion.getRol().getNombre().equalsIgnoreCase("admin")) {
+            redirectAttributes.addFlashAttribute("error", "No tienes permisos para realizar esta acción.");
             return "redirect:/inicio";
         }
 
         Usuario usuario = usuarioRepository.findById(id).orElse(null);
         Rol nuevoRol = rolRepository.findById(rolId).orElse(null);
 
-        // Actualiza rol solo si ambos existen
-        if (usuario != null && nuevoRol != null) {
-            usuario.setRol(nuevoRol);
-            usuarioRepository.save(usuario);
+        if (usuario == null || nuevoRol == null) {
+            redirectAttributes.addFlashAttribute("error", "No se pudo actualizar el rol. Verifica los datos.");
+            return "redirect:/admin/usuarios";
         }
+
+        usuario.setRol(nuevoRol);
+        usuarioRepository.save(usuario);
+
+        redirectAttributes.addFlashAttribute("mensaje",
+                "Rol actualizado correctamente para " + usuario.getNombre() + ".");
         return "redirect:/admin/usuarios"; // Redirige a la lista de usuarios
     }
 
@@ -143,16 +144,23 @@ public class UsuarioController {
      * @param id ID del usuario a eliminar
      */
     @PostMapping("/admin/usuarios/{id}/eliminar")
-    public String eliminarUsuario(@PathVariable Long id, HttpSession session) {
+    public String eliminarUsuario(@PathVariable Long id,
+                                  HttpSession session,
+                                  RedirectAttributes redirectAttributes) {
+
         Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
         if (usuarioSesion == null || !usuarioSesion.getRol().getNombre().equalsIgnoreCase("admin")) {
+            redirectAttributes.addFlashAttribute("error", "No tienes permisos para realizar esta acción.");
             return "redirect:/inicio";
         }
 
-        // Elimina usuario si existe
-        if (usuarioRepository.existsById(id)) {
-            usuarioRepository.deleteById(id);
+        if (!usuarioRepository.existsById(id)) {
+            redirectAttributes.addFlashAttribute("error", "El usuario que intentas eliminar no existe.");
+            return "redirect:/admin/usuarios";
         }
+
+        usuarioRepository.deleteById(id);
+        redirectAttributes.addFlashAttribute("mensaje", "Usuario eliminado correctamente.");
         return "redirect:/admin/usuarios";
     }
 
@@ -164,20 +172,24 @@ public class UsuarioController {
                                    @RequestParam String correo,
                                    @RequestParam(required = false) String contrasenaNueva,
                                    @RequestParam(required = false) MultipartFile foto,
-                                   HttpSession session) throws IOException {
+                                   HttpSession session,
+                                   RedirectAttributes redirectAttributes) throws IOException {
 
         Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
         if (usuarioSesion == null) {
+            redirectAttributes.addFlashAttribute("error", "La sesión ha expirado. Inicia sesión nuevamente.");
             return "redirect:/login";
         }
 
         // Por seguridad, solo permite que el usuario edite su propio perfil
         if (!usuarioSesion.getId().equals(id)) {
+            redirectAttributes.addFlashAttribute("error", "No puedes modificar el perfil de otro usuario.");
             return "redirect:/inicio";
         }
 
         Usuario usuario = usuarioRepository.findById(id).orElse(null);
         if (usuario == null) {
+            redirectAttributes.addFlashAttribute("error", "El usuario no existe.");
             return "redirect:/inicio";
         }
 
@@ -212,6 +224,7 @@ public class UsuarioController {
         // Actualizar el usuario en sesión con los nuevos datos
         session.setAttribute("usuario", usuario);
 
+        redirectAttributes.addFlashAttribute("mensaje", "Perfil actualizado correctamente.");
         return "redirect:/perfil";
     }
 

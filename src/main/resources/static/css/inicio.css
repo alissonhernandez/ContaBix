@@ -311,3 +311,48 @@ body {
         min-height: 100vh;
     }
 }
+
+/* ================================
+   NOTIFICACIONES FLOTANTES
+================================ */
+#notifications {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 9999;
+}
+
+.notification {
+    position: relative;
+    padding: 15px 40px 15px 20px;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.4s ease, fadeOut 0.4s ease 4.5s forwards;
+    opacity: 1;
+}
+
+/* Colores de tipo */
+.notification.error {
+    background-color: #d9534f; /* rojo */
+}
+
+.notification.success {
+    background-color: #5cb85c; /* verde */
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; transform: translateY(-10px); }
+}
+
