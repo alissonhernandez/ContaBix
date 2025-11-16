@@ -9,72 +9,52 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-
 </head>
 <body>
-<!-- Navbar -->
+
+<!-- NAVBAR -->
 <nav class="navbar">
     <div class="logo">Contabix</div>
     <div class="hamburger" id="hamburger">&#9776;</div>
     <ul class="nav-links" id="nav-links">
         <li><a th:href="@{/inicio}">Inicio</a></li>
         <li><a th:href="@{/perfil}">Perfil</a></li>
-        <li><a th:href="@{/librodiario}">Libro Diario</a></li>
-        <li><a th:href="@{/libro-mayor}">Libro Mayor</a></li>
+        <li><a th:href="@{/libro-diario}">Libro Diario</a></li>
+        <li><a th:href="@{/libro-mayor}" class="active">Libro Mayor</a></li>
         <li><a th:href="@{/admin/usuarios}">Gestión de Usuarios</a></li>
         <li><a th:href="@{/logout}">Cerrar Sesión</a></li>
     </ul>
 </nav>
 
-<!-- Main Content -->
+<!-- CONTENIDO -->
 <div class="main-content">
     <h3 class="text-center mb-4">Libro Mayor</h3>
 
-    <!-- Cuenta: Caja -->
-    <div class="table-container mb-4">
-        <div class="account-title mb-3">Caja (1101)</div>
-        <table class="table table-bordered text-center">
-            <thead>
-            <tr>
-                <th>Fecha</th>
-                <th>Descripción</th>
-                <th>Debe</th>
-                <th>Haber</th>
-                <th>Saldo</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="registro : ${registros}">
-                <td th:text="${registro.fecha}"></td>
-                <td th:text="${registro.descripcion}"></td>
-                <td th:text="${#numbers.formatDecimal(registro.debe, 1, 'COMMA', 2, 'POINT')}"></td>
-                <td th:text="${#numbers.formatDecimal(registro.haber, 1, 'COMMA', 2, 'POINT')}"></td>
-                <td th:text="${#numbers.formatDecimal(registro.saldo, 1, 'COMMA', 2, 'POINT')}"></td>
-            </tr>
-            </tbody>
-        </table>
+    <!-- LISTA DINÁMICA DE CUENTAS -->
+    <div th:if="${#lists.isEmpty(registros)}" class="text-center">
+        <p>No hay movimientos registrados.</p>
     </div>
 
-    <!-- Cuenta: Banco -->
-    <div class="table-container">
-        <div class="account-title mb-3">Banco (1102)</div>
+    <div th:each="registro : ${registros}" class="table-container mb-4">
+
+        <!-- TÍTULO DE CUENTA -->
+        <div class="account-title mb-3"
+             th:text="${registro.cuentaContable.codigo} + ' - ' + ${registro.cuentaContable.nombre}">
+        </div>
+
         <table class="table table-bordered text-center">
             <thead>
             <tr>
-                <th>Fecha</th>
-                <th>Descripción</th>
-                <th>Debe</th>
-                <th>Haber</th>
+                <th>Total Debe</th>
+                <th>Total Haber</th>
                 <th>Saldo</th>
             </tr>
             </thead>
+
             <tbody>
-            <tr th:each="registro : ${registros}">
-                <td th:text="${registro.fecha}"></td>
-                <td th:text="${registro.descripcion}"></td>
-                <td th:text="${#numbers.formatDecimal(registro.debe, 1, 'COMMA', 2, 'POINT')}"></td>
-                <td th:text="${#numbers.formatDecimal(registro.haber, 1, 'COMMA', 2, 'POINT')}"></td>
+            <tr>
+                <td th:text="${#numbers.formatDecimal(registro.totalDebe, 1, 'COMMA', 2, 'POINT')}"></td>
+                <td th:text="${#numbers.formatDecimal(registro.totalHaber, 1, 'COMMA', 2, 'POINT')}"></td>
                 <td th:text="${#numbers.formatDecimal(registro.saldo, 1, 'COMMA', 2, 'POINT')}"></td>
             </tr>
             </tbody>
@@ -82,12 +62,10 @@
     </div>
 </div>
 
-<!-- Footer -->
 <footer>
     <p>&copy; 2025 Contabix. Todos los derechos reservados.</p>
 </footer>
 
-<!-- Script menú hamburguesa -->
 <script>
     const hamburger = document.getElementById('hamburger');
     const navLinks = document.getElementById('nav-links');
@@ -95,5 +73,6 @@
         navLinks.classList.toggle('active');
     });
 </script>
+
 </body>
 </html>

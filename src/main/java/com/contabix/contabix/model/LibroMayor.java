@@ -1,95 +1,40 @@
 package com.contabix.contabix.model;
 
-// Importación de las anotaciones de JPA y clases necesarias
 import jakarta.persistence.*;
-import java.time.LocalDate;
 
-/**
- * Clase que representa la entidad "LibroMayor" en la base de datos.
- * Esta entidad almacena los registros contables del libro mayor,
- * con los movimientos de debe, haber y el saldo correspondiente.
- */
 @Entity
-@Table(name = "libro_mayor") // Especifica el nombre de la tabla en la base de datos
+@Table(name = "libro_mayor")
 public class LibroMayor {
 
-    @Id // Indica que este campo es la clave primaria
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Genera el ID automáticamente (auto-incremental)
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    // Fecha del registro contable
-    private LocalDate fecha;
+    @OneToOne
+    @JoinColumn(name = "cuenta_contable_id", nullable = false)
+    private CuentaContable cuentaContable;
 
-    // Descripción o detalle del movimiento
-    private String descripcion;
+    @Column(name = "total_debe")
+    private Double totalDebe;
 
-    // Importe cargado en el debe (entrada)
-    private Double debe;
+    @Column(name = "total_haber")
+    private Double totalHaber;
 
-    // Importe abonado en el haber (salida)
-    private Double haber;
-
-    // Saldo resultante después del movimiento
     private Double saldo;
 
-    // Nombre o código de la cuenta contable asociada
-    private String cuenta;
+    // Getters y setters
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
-    // ----- Getters y Setters -----
+    public CuentaContable getCuentaContable() { return cuentaContable; }
+    public void setCuentaContable(CuentaContable cuentaContable) { this.cuentaContable = cuentaContable; }
 
-    public Long getId() {
-        return id;
-    }
+    public Double getTotalDebe() { return totalDebe; }
+    public void setTotalDebe(Double totalDebe) { this.totalDebe = totalDebe; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Double getTotalHaber() { return totalHaber; }
+    public void setTotalHaber(Double totalHaber) { this.totalHaber = totalHaber; }
 
-    public LocalDate getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public Double getDebe() {
-        return debe;
-    }
-
-    public void setDebe(Double debe) {
-        this.debe = debe;
-    }
-
-    public Double getHaber() {
-        return haber;
-    }
-
-    public void setHaber(Double haber) {
-        this.haber = haber;
-    }
-
-    public Double getSaldo() {
-        return saldo;
-    }
-
-    public void setSaldo(Double saldo) {
-        this.saldo = saldo;
-    }
-
-    public String getCuenta() {
-        return cuenta;
-    }
-
-    public void setCuenta(String cuenta) {
-        this.cuenta = cuenta;
-    }
+    public Double getSaldo() { return saldo; }
+    public void setSaldo(Double saldo) { this.saldo = saldo; }
 }

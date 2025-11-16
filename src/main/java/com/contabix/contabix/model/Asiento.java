@@ -23,8 +23,9 @@ public class Asiento {
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
-    @OneToMany(mappedBy = "asiento", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "asiento", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<DetalleAsiento> detalles = new ArrayList<>();
+
 
     // 🔗 Documento fuente asociado (opcional)
     @OneToOne

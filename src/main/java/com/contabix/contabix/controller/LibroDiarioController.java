@@ -5,19 +5,24 @@ import com.contabix.contabix.model.CuentaContable;
 import com.contabix.contabix.model.DetalleAsiento;
 import com.contabix.contabix.model.DocumentoFuente;
 import com.contabix.contabix.model.Usuario;
-import com.contabix.contabix.repository.AsientoRepository;
-import com.contabix.contabix.repository.CuentaContableRepository;
-import com.contabix.contabix.repository.DocumentoFuenteRepository;
-import com.contabix.contabix.repository.UsuarioRepository;
+import com.contabix.contabix.repository.*;
 import com.contabix.contabix.service.AsientoService;
+import com.contabix.contabix.service.LibroMayorService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+
+
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -45,6 +50,9 @@ public class LibroDiarioController {
     // 🔗 NUEVO: repositorio para documentos fuente
     @Autowired
     private DocumentoFuenteRepository documentoFuenteRepository;
+
+    @Autowired
+    private LibroMayorService libroMayorService;
 
     // ✅ Listado con filtros y sumas
     @GetMapping
@@ -161,35 +169,57 @@ public class LibroDiarioController {
                                  BindingResult bindingResult,
                                  @RequestParam(value = "archivoDocumento", required = false) MultipartFile archivoDocumento,
                                  Model model,
-                                 RedirectAttributes redirectAttributes) {
+                                 RedirectAttributes redirectAttributes,
+                                 HttpSession session) {
 
         try {
-            // 🔹 Obtener o validar usuario (aquí usas tu lógica; mantengo la tuya de ID=1)
-            Usuario usuario = usuarioRepository.findById(1L).orElse(null);
+            // Obtener usuario actual desde la sesión (login manual)
+            Usuario usuario = (Usuario) session.getAttribute("usuario");
+
             if (usuario == null) {
-                model.addAttribute("error", "No existe el usuario con ID 1");
+                model.addAttribute("error", "No se encontró el usuario autenticado");
                 model.addAttribute("asiento", asiento);
                 model.addAttribute("cuentas", cuentaRepository.findAll());
                 return "libro-diario-form";
             }
+
             asiento.setUsuario(usuario);
 
-            // 🔹 Procesar detalles válidos (los que tengan cuenta y monto)
+
+            // 🔹 Procesar detalles válidos correctamente (cuenta + debe/haber)
             List<DetalleAsiento> detallesValidos = new ArrayList<>();
+
             if (asiento.getDetalles() != null) {
                 for (DetalleAsiento d : asiento.getDetalles()) {
-                    if (d.getCuenta() != null && d.getCuenta().getId() != null &&
-                            ((d.getDebe() != null && d.getDebe() > 0) ||
-                                    (d.getHaber() != null && d.getHaber() > 0))) {
 
-                        CuentaContable cuenta = cuentaRepository.findById(d.getCuenta().getId()).orElse(null);
-                        d.setCuenta(cuenta);
-                        d.setAsiento(asiento);
-                        detallesValidos.add(d);
+                    // Asegurar que la cuenta viene del formulario
+                    if (d.getCuenta() == null || d.getCuenta().getId() == null) {
+                        continue;
                     }
+
+                    // Obtener la cuenta real desde la BD
+                    CuentaContable cuenta = cuentaRepository.findById(d.getCuenta().getId()).orElse(null);
+                    if (cuenta == null) continue;
+
+                    // Asegurar montos
+                    double debe = d.getDebe() != null ? d.getDebe() : 0.0;
+                    double haber = d.getHaber() != null ? d.getHaber() : 0.0;
+
+                    // Si ambos son 0, no se guarda
+                    if (debe == 0 && haber == 0) {
+                        continue;
+                    }
+
+                    // Asignación correcta
+                    d.setCuenta(cuenta);
+                    d.setAsiento(asiento);
+
+                    detallesValidos.add(d);
                 }
             }
+            // Reemplazar detalles del asiento por los válidos
             asiento.setDetalles(detallesValidos);
+
 
             // 🔗 Si se adjunta un documento fuente, guardarlo y asociarlo al asiento
             if (archivoDocumento != null && !archivoDocumento.isEmpty()) {
@@ -209,6 +239,9 @@ public class LibroDiarioController {
 
             // Guardar validando balance (Debe = Haber)
             asientoService.guardarAsientoConValidacion(asiento);
+
+            // ACTUALIZAR LIBRO MAYOR
+            libroMayorService.actualizarLibroMayor();
 
             String mensaje = asiento.getId() != null
                     ? "Asiento actualizado correctamente"
@@ -245,4 +278,7 @@ public class LibroDiarioController {
         }
         return "redirect:/libro-diario";
     }
+
 }
+
+

@@ -18,7 +18,7 @@ public class DetalleAsiento {
     private Asiento asiento;
 
     @ManyToOne
-    @JoinColumn(name = "cuenta_id")
+    @JoinColumn(name = "cuenta_contable_id")
     private CuentaContable cuenta;
 
     // Getters y setters manuales
