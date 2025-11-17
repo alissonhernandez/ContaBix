@@ -31,4 +31,9 @@ public interface DetalleAsientoRepository extends JpaRepository<DetalleAsiento, 
             "FROM DetalleAsiento d")
     Object[] generarEstadoResultados();
 
+    @Query("SELECT d.cuenta.codigo, d.cuenta.nombre, SUM(d.debe), SUM(d.haber) " +
+            "FROM DetalleAsiento d GROUP BY d.cuenta.codigo, d.cuenta.nombre ORDER BY d.cuenta.codigo ASC")
+    List<Object[]> obtenerBalanceComprobacion();
+
+
 }

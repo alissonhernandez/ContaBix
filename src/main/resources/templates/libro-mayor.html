@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Libro Mayor - Contabix</title>
-    <link rel="stylesheet" th:href="@{/css/libromayor.css}">
+    <link rel="stylesheet" th:href="@{/css/libro-diario-list.css}">
     <link rel="stylesheet" th:href="@{/css/inicio.css}">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<!-- NAVBAR -->
 <nav class="navbar">
     <div class="logo">Contabix</div>
     <div class="hamburger" id="hamburger">&#9776;</div>
@@ -20,10 +16,11 @@
         <li><a th:href="@{/inicio}">Inicio</a></li>
         <li><a th:href="@{/perfil}">Perfil</a></li>
         <li><a th:href="@{/libro-diario}">Libro Diario</a></li>
-        <li><a th:href="@{/libro-mayor}" class="active">Libro Mayor</a></li>
+        <li><a th:href="@{/libro-mayor}">Libro Mayor</a></li>
         <li><a th:href="@{/estado-resultados}" class="active">Estado de Resultados</a></li>
+        <li><a th:href="@{/balance-comprobacion}" class="active">Balance de Comprobacion</a></li>
         <li><a th:href="@{/admin/usuarios}">Gestión de Usuarios</a></li>
-        <li><a th:href="@{/logout}">Cerrar Sesión</a></li>
+        <li><a th:href="@{/logout}">Cerrar sesión</a></li>
     </ul>
 </nav>
 
