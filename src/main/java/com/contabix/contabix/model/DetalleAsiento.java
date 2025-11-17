@@ -9,7 +9,6 @@ public class DetalleAsiento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     private Double debe;
     private Double haber;
 
