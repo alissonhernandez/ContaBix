@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LibroMayorRepository extends JpaRepository<LibroMayor, Long> {
+    void deleteAll(); // Limpiar antes de recalcularlo
 }

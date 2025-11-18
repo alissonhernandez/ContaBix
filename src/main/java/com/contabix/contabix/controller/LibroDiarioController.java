@@ -1,33 +1,30 @@
 package com.contabix.contabix.controller;
 
 import com.contabix.contabix.model.Asiento;
-import com.contabix.contabix.model.DetalleAsiento;
 import com.contabix.contabix.model.CuentaContable;
+import com.contabix.contabix.model.DetalleAsiento;
+import com.contabix.contabix.model.DocumentoFuente;
 import com.contabix.contabix.model.Usuario;
-import com.contabix.contabix.repository.AsientoRepository;
-import com.contabix.contabix.repository.CuentaContableRepository;
-import com.contabix.contabix.repository.UsuarioRepository;
+import com.contabix.contabix.repository.*;
 import com.contabix.contabix.service.AsientoService;
+import com.contabix.contabix.service.LibroMayorService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
 
 
-
-
-
-
-
-
-
-
-
-
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,6 +46,13 @@ public class LibroDiarioController {
 
     @Autowired
     private AsientoService asientoService;
+
+    // 🔗 NUEVO: repositorio para documentos fuente
+    @Autowired
+    private DocumentoFuenteRepository documentoFuenteRepository;
+
+    @Autowired
+    private LibroMayorService libroMayorService;
 
     // ✅ Listado con filtros y sumas
     @GetMapping
@@ -125,6 +129,7 @@ public class LibroDiarioController {
     @GetMapping("/nuevo")
     public String nuevoAsiento(Model model) {
         Asiento asiento = new Asiento();
+        asiento.setFecha(LocalDate.now());
         asiento.setDetalles(new ArrayList<>());
 
         // Se inicia con 2 filas por defecto
@@ -158,47 +163,96 @@ public class LibroDiarioController {
         return "libro-diario-form";
     }
 
-    // ✅ Guardar asiento (nuevo o editado)
+    // ✅ Guardar asiento (nuevo o editado) + documento fuente opcional
     @PostMapping("/guardar")
     public String guardarAsiento(@ModelAttribute("asiento") Asiento asiento,
                                  BindingResult bindingResult,
+                                 @RequestParam(value = "archivoDocumento", required = false) MultipartFile archivoDocumento,
                                  Model model,
-                                 RedirectAttributes redirectAttributes) {
+                                 RedirectAttributes redirectAttributes,
+                                 HttpSession session) {
+
         try {
-            // 🔹 Obtener o validar usuario
-            Usuario usuario = usuarioRepository.findById(1L).orElse(null);
+            // Obtener usuario actual desde la sesión (login manual)
+            Usuario usuario = (Usuario) session.getAttribute("usuario");
+
             if (usuario == null) {
-                model.addAttribute("error", "No existe el usuario con ID 1");
+                model.addAttribute("error", "No se encontró el usuario autenticado");
                 model.addAttribute("asiento", asiento);
                 model.addAttribute("cuentas", cuentaRepository.findAll());
                 return "libro-diario-form";
             }
+
             asiento.setUsuario(usuario);
 
-            // Filtrar detalles válidos (no vacíos)
+
+            // 🔹 Procesar detalles válidos correctamente (cuenta + debe/haber)
             List<DetalleAsiento> detallesValidos = new ArrayList<>();
-            for (DetalleAsiento d : asiento.getDetalles()) {
-                if (d.getCuenta() != null && d.getCuenta().getId() != null &&
-                        ((d.getDebe() != null && d.getDebe() > 0) ||
-                                (d.getHaber() != null && d.getHaber() > 0))) {
+
+            if (asiento.getDetalles() != null) {
+                for (DetalleAsiento d : asiento.getDetalles()) {
+
+                    // Asegurar que la cuenta viene del formulario
+                    if (d.getCuenta() == null || d.getCuenta().getId() == null) {
+                        continue;
+                    }
+
+                    // Obtener la cuenta real desde la BD
                     CuentaContable cuenta = cuentaRepository.findById(d.getCuenta().getId()).orElse(null);
+                    if (cuenta == null) continue;
+
+                    // Asegurar montos
+                    double debe = d.getDebe() != null ? d.getDebe() : 0.0;
+                    double haber = d.getHaber() != null ? d.getHaber() : 0.0;
+
+                    // Si ambos son 0, no se guarda
+                    if (debe == 0 && haber == 0) {
+                        continue;
+                    }
+
+                    // Asignación correcta
                     d.setCuenta(cuenta);
                     d.setAsiento(asiento);
+
                     detallesValidos.add(d);
                 }
             }
-
+            // Reemplazar detalles del asiento por los válidos
             asiento.setDetalles(detallesValidos);
+
+
+            // 🔗 Si se adjunta un documento fuente, guardarlo y asociarlo al asiento
+            if (archivoDocumento != null && !archivoDocumento.isEmpty()) {
+                DocumentoFuente doc = new DocumentoFuente();
+                doc.setNombreArchivo(archivoDocumento.getOriginalFilename());
+                doc.setTipoArchivo(archivoDocumento.getContentType());
+                doc.setContenido(archivoDocumento.getBytes());
+                doc.setDescripcion("Documento del asiento: " + asiento.getDescripcion());
+                documentoFuenteRepository.save(doc);
+                asiento.setDocumentoFuente(doc);
+            }
+
+            // Fecha por defecto si viene nula
+            if (asiento.getFecha() == null) {
+                asiento.setFecha(LocalDate.now());
+            }
 
             // Guardar validando balance (Debe = Haber)
             asientoService.guardarAsientoConValidacion(asiento);
 
-            String mensaje = asiento.getId() != null ? "Asiento actualizado correctamente" : "Asiento guardado correctamente";
+            // ACTUALIZAR LIBRO MAYOR
+            libroMayorService.actualizarLibroMayor();
+
+            String mensaje = asiento.getId() != null
+                    ? "Asiento actualizado correctamente"
+                    : "Asiento guardado correctamente";
             redirectAttributes.addFlashAttribute("success", mensaje);
             return "redirect:/libro-diario";
 
         } catch (IllegalArgumentException ex) {
             model.addAttribute("error", ex.getMessage());
+        } catch (IOException ex) {
+            model.addAttribute("error", "Error al adjuntar el documento: " + ex.getMessage());
         } catch (Exception ex) {
             model.addAttribute("error", "Error al guardar asiento: " + ex.getMessage());
         }
@@ -208,7 +262,7 @@ public class LibroDiarioController {
         return "libro-diario-form";
     }
 
-    // ✅ Eliminar asiento
+
     @GetMapping("/eliminar/{id}")
     public String eliminarAsiento(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
         try {
@@ -224,4 +278,6 @@ public class LibroDiarioController {
         }
         return "redirect:/libro-diario";
     }
+
 }
+

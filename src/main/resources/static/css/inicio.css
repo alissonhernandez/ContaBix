@@ -18,8 +18,8 @@ body {
    ESTRUCTURA GENERAL
 ================================ */
 .dashboard {
-    display: flex;
     min-height: 100vh;
+    background-color: #f5f7fa;
 }
 
 /* ================================
@@ -33,24 +33,41 @@ body {
     flex-direction: column;
     padding: 1.5rem;
     transition: transform 0.3s ease;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 150;
 }
+
 
 .sidebar-header {
     display: flex;
     align-items: center;
+    gap: 0.8rem;
     margin-bottom: 2rem;
 }
 
 .avatar-circle {
-    width: 60px;
-    height: 60px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
-    background: #1d4ed8; /* Azul fuerte */
+    overflow: hidden;
+    border: 2px solid #1d4ed8;
+    background: #0b1120;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 1rem;
-    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.avatar-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .user-info h2 {
@@ -101,7 +118,7 @@ body {
     transform: translateX(2px);
 }
 
-/* Pie del sidebar */
+/* Pie del sidebar*/
 .sidebar-footer {
     margin-top: auto;
     border-top: 1px solid rgba(148, 163, 184, 0.4);
@@ -119,47 +136,61 @@ body {
     margin-right: 0.5rem;
 }
 
+.sidebar-nav li.logout a {
+    color: #f87171;
+    font-weight: 600;
+}
+
+.sidebar-nav li.logout a:hover {
+    background: rgba(248, 113, 113, 0.2);
+}
+
 /* ================================
-   MENÚ MÓVIL
+   MENÚ MÓVIL (botón toggle)
 ================================ */
 .menu-toggle {
-    display: none;
-    background: #fff;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
     border: none;
-    padding: 0.5rem;
-    border-radius: 8px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    margin-bottom: 1rem;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: #1d4ed8;
     cursor: pointer;
+    z-index: 999;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+    transition: background 0.3s ease, transform 0.2s ease;
 }
 
-@media (max-width: 900px) {
-    .sidebar {
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        transform: translateX(-100%);
-        z-index: 100;
-    }
-
-    .sidebar.sidebar-open {
-        transform: translateX(0);
-    }
-
-    .menu-toggle {
-        display: inline-block;
-    }
+.menu-toggle:hover {
+    background: #2563eb;
+    transform: scale(1.05);
 }
+
+.menu-toggle i {
+    color: #ffffff !important;
+    font-size: 1.3rem;
+    pointer-events: none;
+}
+
 
 /* ================================
    CONTENIDO PRINCIPAL
 ================================ */
 .main-content {
+    position: relative;
     flex: 1;
     padding: 2rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    background-color: #f5f7fa;
+    min-height: 100vh;
+    margin-left: 260px;
 }
 
 /* ================================
@@ -211,7 +242,7 @@ body {
     font-size: 1rem;
 }
 
-/* Responsive */
+/* Responsive sección empresa */
 @media (max-width: 768px) {
     .empresa-info {
         flex-direction: column;
@@ -250,3 +281,78 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: #0f172a;
 }
+
+/* ================================
+   RESPONSIVE GENERAL
+================================ */
+@media (max-width: 900px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        transform: translateX(-100%);
+        z-index: 150;
+    }
+
+    .sidebar.sidebar-open {
+        transform: translateX(0);
+    }
+
+    .menu-toggle {
+        display: flex;
+    }
+
+    .main-content {
+        padding: 4rem 1.5rem 2rem;
+    }
+
+    .dashboard {
+        min-height: 100vh;
+    }
+}
+
+/* ================================
+   NOTIFICACIONES FLOTANTES
+================================ */
+#notifications {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 9999;
+}
+
+.notification {
+    position: relative;
+    padding: 15px 40px 15px 20px;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.4s ease, fadeOut 0.4s ease 4.5s forwards;
+    opacity: 1;
+}
+
+/* Colores de tipo */
+.notification.error {
+    background-color: #d9534f; /* rojo */
+}
+
+.notification.success {
+    background-color: #5cb85c; /* verde */
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; transform: translateY(-10px); }
+}
+
