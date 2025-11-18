@@ -1,13 +1,11 @@
 package com.contabix.contabix.controller;
 
 import com.contabix.contabix.model.Asiento;
-import com.contabix.contabix.model.CuentaContable;
 import com.contabix.contabix.model.DetalleAsiento;
-import com.contabix.contabix.model.DocumentoFuente;
+import com.contabix.contabix.model.CuentaContable;
 import com.contabix.contabix.model.Usuario;
 import com.contabix.contabix.repository.AsientoRepository;
 import com.contabix.contabix.repository.CuentaContableRepository;
-import com.contabix.contabix.repository.DocumentoFuenteRepository;
 import com.contabix.contabix.repository.UsuarioRepository;
 import com.contabix.contabix.service.AsientoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +14,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
+
+
+
+
+
+
+
+
+
+
+
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,10 +49,6 @@ public class LibroDiarioController {
 
     @Autowired
     private AsientoService asientoService;
-
-    // 🔗 NUEVO: repositorio para documentos fuente
-    @Autowired
-    private DocumentoFuenteRepository documentoFuenteRepository;
 
     // ✅ Listado con filtros y sumas
     @GetMapping
@@ -121,7 +125,6 @@ public class LibroDiarioController {
     @GetMapping("/nuevo")
     public String nuevoAsiento(Model model) {
         Asiento asiento = new Asiento();
-        asiento.setFecha(LocalDate.now());
         asiento.setDetalles(new ArrayList<>());
 
         // Se inicia con 2 filas por defecto
@@ -155,16 +158,14 @@ public class LibroDiarioController {
         return "libro-diario-form";
     }
 
-    // ✅ Guardar asiento (nuevo o editado) + documento fuente opcional
+    // ✅ Guardar asiento (nuevo o editado)
     @PostMapping("/guardar")
     public String guardarAsiento(@ModelAttribute("asiento") Asiento asiento,
                                  BindingResult bindingResult,
-                                 @RequestParam(value = "archivoDocumento", required = false) MultipartFile archivoDocumento,
                                  Model model,
                                  RedirectAttributes redirectAttributes) {
-
         try {
-            // 🔹 Obtener o validar usuario (aquí usas tu lógica; mantengo la tuya de ID=1)
+            // 🔹 Obtener o validar usuario
             Usuario usuario = usuarioRepository.findById(1L).orElse(null);
             if (usuario == null) {
                 model.addAttribute("error", "No existe el usuario con ID 1");
@@ -174,52 +175,30 @@ public class LibroDiarioController {
             }
             asiento.setUsuario(usuario);
 
-            // 🔹 Procesar detalles válidos (los que tengan cuenta y monto)
+            // Filtrar detalles válidos (no vacíos)
             List<DetalleAsiento> detallesValidos = new ArrayList<>();
-            if (asiento.getDetalles() != null) {
-                for (DetalleAsiento d : asiento.getDetalles()) {
-                    if (d.getCuenta() != null && d.getCuenta().getId() != null &&
-                            ((d.getDebe() != null && d.getDebe() > 0) ||
-                                    (d.getHaber() != null && d.getHaber() > 0))) {
-
-                        CuentaContable cuenta = cuentaRepository.findById(d.getCuenta().getId()).orElse(null);
-                        d.setCuenta(cuenta);
-                        d.setAsiento(asiento);
-                        detallesValidos.add(d);
-                    }
+            for (DetalleAsiento d : asiento.getDetalles()) {
+                if (d.getCuenta() != null && d.getCuenta().getId() != null &&
+                        ((d.getDebe() != null && d.getDebe() > 0) ||
+                                (d.getHaber() != null && d.getHaber() > 0))) {
+                    CuentaContable cuenta = cuentaRepository.findById(d.getCuenta().getId()).orElse(null);
+                    d.setCuenta(cuenta);
+                    d.setAsiento(asiento);
+                    detallesValidos.add(d);
                 }
             }
+
             asiento.setDetalles(detallesValidos);
-
-            // 🔗 Si se adjunta un documento fuente, guardarlo y asociarlo al asiento
-            if (archivoDocumento != null && !archivoDocumento.isEmpty()) {
-                DocumentoFuente doc = new DocumentoFuente();
-                doc.setNombreArchivo(archivoDocumento.getOriginalFilename());
-                doc.setTipoArchivo(archivoDocumento.getContentType());
-                doc.setContenido(archivoDocumento.getBytes());
-                doc.setDescripcion("Documento del asiento: " + asiento.getDescripcion());
-                documentoFuenteRepository.save(doc);
-                asiento.setDocumentoFuente(doc);
-            }
-
-            // Fecha por defecto si viene nula
-            if (asiento.getFecha() == null) {
-                asiento.setFecha(LocalDate.now());
-            }
 
             // Guardar validando balance (Debe = Haber)
             asientoService.guardarAsientoConValidacion(asiento);
 
-            String mensaje = asiento.getId() != null
-                    ? "Asiento actualizado correctamente"
-                    : "Asiento guardado correctamente";
+            String mensaje = asiento.getId() != null ? "Asiento actualizado correctamente" : "Asiento guardado correctamente";
             redirectAttributes.addFlashAttribute("success", mensaje);
             return "redirect:/libro-diario";
 
         } catch (IllegalArgumentException ex) {
             model.addAttribute("error", ex.getMessage());
-        } catch (IOException ex) {
-            model.addAttribute("error", "Error al adjuntar el documento: " + ex.getMessage());
         } catch (Exception ex) {
             model.addAttribute("error", "Error al guardar asiento: " + ex.getMessage());
         }

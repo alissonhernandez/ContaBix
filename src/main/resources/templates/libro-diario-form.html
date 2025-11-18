@@ -3,9 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Nuevo Asiento - Contabix</title>
+
+    <!-- Estilos generales (navbar, fondo, etc.) -->
     <link rel="stylesheet" th:href="@{/css/inicio.css}">
-    <link rel="stylesheet" th:href="@{/css/libro-diario-list.css}">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Estilos SOLO del formulario del asiento -->
+    <link rel="stylesheet" th:href="@{/css/libro-diario-form.css}">
+
+    <!-- Choices.js para buscar dentro del combo de cuentas -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"/>
 </head>
 <body>
 
@@ -24,19 +31,21 @@
 </nav>
 
 <main>
-    <h1 th:text="${asiento.id == null} ? 'Nuevo Asiento' : 'Editar Asiento'"></h1>
+    <!-- Título grande centrado como en tu segunda captura -->
+    <h1 class="titulo-asiento">Registro de Asiento Contable</h1>
 
-    <div th:if="${error}" class="alert-danger" th:text="${error}"></div>
+    <div class="asiento-form">
+        <!-- Mensaje de error en rojo, debajo del título -->
+        <div th:if="${error}" class="mensaje-error" th:text="${error}"></div>
 
-    <div class="form-container">
         <form th:action="@{/libro-diario/guardar}"
               th:object="${asiento}"
               method="post"
               enctype="multipart/form-data">
 
-            <!-- necesario para edición -->
             <input type="hidden" th:field="*{id}"/>
 
+            <!-- Campos principales -->
             <div class="form-group">
                 <label>Fecha:</label>
                 <input type="date" th:field="*{fecha}">
@@ -47,57 +56,69 @@
                 <input type="text" th:field="*{descripcion}" required>
             </div>
 
-            <!-- 🔗 Documento fuente -->
             <div class="form-group">
                 <label>Documento fuente (PDF, opcional):</label>
                 <input type="file" name="archivoDocumento" accept="application/pdf">
             </div>
 
-            <!-- ===== Detalles del asiento: Cuenta / Debe / Haber ===== -->
-            <h2 style="margin-top: 20px; margin-bottom: 10px;">Detalles del Asiento</h2>
+            <!-- Detalles -->
+            <div class="table-section">
+                <h3>Detalles del Asiento</h3>
 
-            <table class="tabla-detalle-asiento">
-                <thead>
-                <tr>
-                    <th>Cuenta</th>
-                    <th>Debe</th>
-                    <th>Haber</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="detalle, iter : *{detalles}">
-                    <td>
-                        <select th:field="*{detalles[__${iter.index}__].cuenta.id}">
-                            <option value="">-- Seleccione cuenta --</option>
-                            <option th:each="cuenta : ${cuentas}"
-                                    th:value="${cuenta.id}"
-                                    th:text="${cuenta.codigo + ' - ' + cuenta.nombre}">
-                            </option>
-                        </select>
-                    </td>
-                    <td>
-                        <input type="number"
-                               step="0.01"
-                               min="0"
-                               th:field="*{detalles[__${iter.index}__].debe}">
-                    </td>
-                    <td>
-                        <input type="number"
-                               step="0.01"
-                               min="0"
-                               th:field="*{detalles[__${iter.index}__].haber}">
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                <table class="tabla-asiento">
+                    <thead>
+                    <tr>
+                        <th>Cuenta</th>
+                        <th>Debe</th>
+                        <th>Haber</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="detalle, iter : *{detalles}">
+                        <td>
+                            <select class="sel-cuenta"
+                                    th:field="*{detalles[__${iter.index}__].cuenta.id}">
+                                <option value="">-- Seleccione cuenta --</option>
+                                <option th:each="cuenta : ${cuentas}"
+                                        th:value="${cuenta.id}"
+                                        th:text="${cuenta.codigo + ' - ' + cuenta.nombre}">
+                                </option>
+                            </select>
+                        </td>
+                        <td>
+                            <div class="input-money">
+                                <span>$</span>
+                                <input type="number"
+                                       step="0.01"
+                                       min="0"
+                                       th:field="*{detalles[__${iter.index}__].debe}">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-money">
+                                <span>$</span>
+                                <input type="number"
+                                       step="0.01"
+                                       min="0"
+                                       th:field="*{detalles[__${iter.index}__].haber}">
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
 
-            <p class="nota-detalle">
-                La suma del Debe debe ser igual a la suma del Haber.
-            </p>
+                <!-- Texto informativo -->
 
+            </div>
+
+            <!-- Botones centrados como en la captura -->
             <div class="form-actions">
-                <button type="submit" class="btn">Guardar</button>
-                <a th:href="@{/libro-diario}" class="btn btn-secundario">Cancelar</a>
+                <button type="submit" class="btn-guardar">
+                    💾 Guardar Asiento
+                </button>
+                <a th:href="@{/libro-diario}" class="btn-cancelar">
+                    Cancelar
+                </a>
             </div>
         </form>
     </div>
@@ -107,11 +128,25 @@
     &copy; 2025 Contabix | Sistema Contable
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 <script>
+    // menú hamburguesa
     const hamburger = document.getElementById('hamburger');
     const navLinks = document.getElementById('nav-links');
     hamburger.addEventListener('click', () => {
         navLinks.classList.toggle('active');
+    });
+
+    // activar búsqueda en combos de cuenta (Choices.js)
+    document.addEventListener('DOMContentLoaded', function () {
+        const selects = document.querySelectorAll('.sel-cuenta');
+        selects.forEach(function (sel) {
+            new Choices(sel, {
+                searchEnabled: true,
+                itemSelectText: '',
+                shouldSort: false
+            });
+        });
     });
 </script>
 
