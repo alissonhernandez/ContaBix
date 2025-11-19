@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
 <div class="dashboard">
@@ -34,55 +34,70 @@
             <ul>
                 <li class="active">
                     <a th:href="@{/inicio}">
-                        <i class="fas fa-home"></i>
+                        <i class="bi bi-house-door"></i>
                         <span>Inicio</span>
                     </a>
                 </li>
+
                 <li>
                     <a th:href="@{/perfil}">
-                        <i class="fas fa-user-circle"></i>
+                        <i class="bi bi-person-circle"></i>
                         <span>Perfil</span>
                     </a>
                 </li>
+
                 <li>
                     <a th:href="@{/librodiario}">
-                        <i class="fas fa-book-open"></i>
+                        <i class="bi bi-journal-text"></i>
                         <span>Libro Diario</span>
                     </a>
                 </li>
+
                 <li>
                     <a th:href="@{/libro-mayor}">
-                        <i class="fas fa-chart-line"></i>
+                        <i class="bi bi-bar-chart-line"></i>
                         <span>Libro Mayor</span>
                     </a>
                 </li>
+
                 <li>
                     <a th:href="@{/estado-resultados}">
-                        <i class="fas fa-chart-line"></i>
+                        <i class="bi bi-graph-up-arrow"></i>
                         <span>Estado de Resultados</span>
                     </a>
                 </li>
+
                 <li>
                     <a th:href="@{/balance-comprobacion}">
-                        <i class="fas fa-chart-line"></i>
-                        <span>Balance de Comprobacion</span>
+                        <i class="bi bi-list-columns-reverse"></i>
+                        <span>Balance de Comprobación</span>
                     </a>
                 </li>
+
                 <li>
                     <a th:href="@{/documentos}">
-                        <i class="fas fa-file-invoice"></i>
+                        <i class="bi bi-file-earmark-text"></i>
                         <span>Documentos Fuente</span>
                     </a>
                 </li>
+
+                <li>
+                    <a th:href="@{/auditoria}">
+                        <i class="bi bi-shield-check"></i>
+                        <span>Auditoría</span>
+                    </a>
+                </li>
+
                 <li th:if="${usuario.rol.nombre == 'admin'}">
                     <a th:href="@{/admin/usuarios}">
-                        <i class="fas fa-users-cog"></i>
+                        <i class="bi bi-people-fill"></i>
                         <span>Gestión de Usuarios</span>
                     </a>
                 </li>
+
                 <li class="logout">
                     <a th:href="@{/logout}">
-                        <i class="fas fa-sign-out-alt"></i>
+                        <i class="bi bi-box-arrow-right"></i>
                         <span>Cerrar Sesión</span>
                     </a>
                 </li>
@@ -95,8 +110,9 @@
 
         <!-- BOTÓN DE MENÚ MÓVIL -->
         <button class="menu-toggle" id="menuToggle">
-            <i class="fas fa-bars"></i>
+            <i class="bi bi-list"></i>
         </button>
+
 
         <!-- SECCIÓN EMPRESA -->
         <section class="empresa-info">
@@ -108,7 +124,7 @@
                 <h1>Bienvenido a Contabix</h1>
                 <p>
                     <strong>Contabix</strong> es una plataforma diseñada para optimizar la gestión contable de su empresa.
-                    Permite administrar fácilmente el <em>Libro Diario</em>, el <em>Libro Mayor</em> y los <em>Documentos Fuente</em>,
+                    Permite administrar fácilmente el <em>Libro Diario</em>, el <em>Libro Mayor</em> entre otros documentos,
                     garantizando orden, transparencia y eficiencia en todos sus procesos financieros.
                 </p>
                 <p>

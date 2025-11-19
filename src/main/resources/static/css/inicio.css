@@ -108,14 +108,34 @@ body {
 }
 
 .sidebar-nav a i {
+    color: #e5e7eb;
     margin-right: 0.6rem;
+    font-size: 1.2rem;
 }
 
-.sidebar-nav a:hover,
+.sidebar-nav a:hover i,
+.sidebar-nav li.active a i {
+    color: #ffffff;
+}
+
+.sidebar-nav a:hover {
+    background: #1e3a8a;
+    color: #ffffff;
+    transform: translateX(3px);
+}
+
+.sidebar-nav a:hover i {
+    color: #ffffff;
+}
+
 .sidebar-nav li.active a {
-    background: #1d4ed8;
-    color: white;
-    transform: translateX(2px);
+    background: #1e3a8a;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.sidebar-nav li.active a i {
+    color: #ffffff;
 }
 
 /* Pie del sidebar*/
@@ -172,9 +192,8 @@ body {
 }
 
 .menu-toggle i {
-    color: #ffffff !important;
-    font-size: 1.3rem;
-    pointer-events: none;
+    color: #fff;
+    font-size: 1.5rem;
 }
 
 
