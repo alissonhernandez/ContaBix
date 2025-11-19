@@ -8,21 +8,16 @@ import com.contabix.contabix.model.Usuario;
 import com.contabix.contabix.repository.*;
 import com.contabix.contabix.service.AsientoService;
 import com.contabix.contabix.service.LibroMayorService;
+import com.contabix.contabix.service.AuditoriaService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-
-
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -47,12 +42,14 @@ public class LibroDiarioController {
     @Autowired
     private AsientoService asientoService;
 
-    // 🔗 NUEVO: repositorio para documentos fuente
     @Autowired
     private DocumentoFuenteRepository documentoFuenteRepository;
 
     @Autowired
     private LibroMayorService libroMayorService;
+
+    @Autowired
+    private AuditoriaService auditoriaService;
 
     // ✅ Listado con filtros y sumas
     @GetMapping
@@ -72,7 +69,6 @@ public class LibroDiarioController {
 
         List<Asiento> asientos;
 
-        // --- Filtro de búsqueda ---
         if (inicio != null && fin != null) {
             asientos = asientoRepository.findByFechaBetween(inicio, fin);
         } else if (q != null && !q.isBlank()) {
@@ -81,7 +77,6 @@ public class LibroDiarioController {
             asientos = asientoRepository.findAll();
         }
 
-        // --- Cálculo de subtotales y totales ---
         Map<Integer, Double> subtotalDebeMap = new HashMap<>();
         Map<Integer, Double> subtotalHaberMap = new HashMap<>();
         double totalDebe = 0.0;
@@ -111,7 +106,6 @@ public class LibroDiarioController {
             totalHaber += sumaHaber;
         }
 
-        // --- Atributos del modelo ---
         model.addAttribute("asientos", asientos);
         model.addAttribute("inicio", inicio);
         model.addAttribute("fin", fin);
@@ -132,7 +126,6 @@ public class LibroDiarioController {
         asiento.setFecha(LocalDate.now());
         asiento.setDetalles(new ArrayList<>());
 
-        // Se inicia con 2 filas por defecto
         asiento.getDetalles().add(new DetalleAsiento());
         asiento.getDetalles().add(new DetalleAsiento());
 
@@ -151,7 +144,6 @@ public class LibroDiarioController {
             return "redirect:/libro-diario";
         }
 
-        // Si no tiene detalles, agregar uno vacío para evitar errores
         if (asiento.getDetalles() == null || asiento.getDetalles().isEmpty()) {
             asiento.setDetalles(new ArrayList<>());
             asiento.getDetalles().add(new DetalleAsiento());
@@ -173,7 +165,6 @@ public class LibroDiarioController {
                                  HttpSession session) {
 
         try {
-            // Obtener usuario actual desde la sesión (login manual)
             Usuario usuario = (Usuario) session.getAttribute("usuario");
 
             if (usuario == null) {
@@ -185,43 +176,34 @@ public class LibroDiarioController {
 
             asiento.setUsuario(usuario);
 
-
-            // 🔹 Procesar detalles válidos correctamente (cuenta + debe/haber)
             List<DetalleAsiento> detallesValidos = new ArrayList<>();
 
             if (asiento.getDetalles() != null) {
                 for (DetalleAsiento d : asiento.getDetalles()) {
 
-                    // Asegurar que la cuenta viene del formulario
                     if (d.getCuenta() == null || d.getCuenta().getId() == null) {
                         continue;
                     }
 
-                    // Obtener la cuenta real desde la BD
                     CuentaContable cuenta = cuentaRepository.findById(d.getCuenta().getId()).orElse(null);
                     if (cuenta == null) continue;
 
-                    // Asegurar montos
                     double debe = d.getDebe() != null ? d.getDebe() : 0.0;
                     double haber = d.getHaber() != null ? d.getHaber() : 0.0;
 
-                    // Si ambos son 0, no se guarda
                     if (debe == 0 && haber == 0) {
                         continue;
                     }
 
-                    // Asignación correcta
                     d.setCuenta(cuenta);
                     d.setAsiento(asiento);
 
                     detallesValidos.add(d);
                 }
             }
-            // Reemplazar detalles del asiento por los válidos
+
             asiento.setDetalles(detallesValidos);
 
-
-            // 🔗 Si se adjunta un documento fuente, guardarlo y asociarlo al asiento
             if (archivoDocumento != null && !archivoDocumento.isEmpty()) {
                 DocumentoFuente doc = new DocumentoFuente();
                 doc.setNombreArchivo(archivoDocumento.getOriginalFilename());
@@ -232,16 +214,19 @@ public class LibroDiarioController {
                 asiento.setDocumentoFuente(doc);
             }
 
-            // Fecha por defecto si viene nula
             if (asiento.getFecha() == null) {
                 asiento.setFecha(LocalDate.now());
             }
 
-            // Guardar validando balance (Debe = Haber)
             asientoService.guardarAsientoConValidacion(asiento);
 
             // ACTUALIZAR LIBRO MAYOR
             libroMayorService.actualizarLibroMayor();
+
+            // Registrar en bitácora de auditoría
+            auditoriaService.registrar(usuario,
+                    "GUARDAR_ASIENTO",
+                    "Asiento ID: " + asiento.getId());
 
             String mensaje = asiento.getId() != null
                     ? "Asiento actualizado correctamente"
@@ -262,9 +247,11 @@ public class LibroDiarioController {
         return "libro-diario-form";
     }
 
-
+    // ✅ Eliminar asiento
     @GetMapping("/eliminar/{id}")
-    public String eliminarAsiento(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+    public String eliminarAsiento(@PathVariable Integer id,
+                                  RedirectAttributes redirectAttributes,
+                                  HttpSession session) {
         try {
             Asiento asiento = asientoRepository.findById(id).orElse(null);
             if (asiento == null) {
@@ -272,6 +259,13 @@ public class LibroDiarioController {
             } else {
                 asientoRepository.delete(asiento);
                 redirectAttributes.addFlashAttribute("success", "Asiento eliminado correctamente");
+
+                Usuario usuario = (Usuario) session.getAttribute("usuario");
+                if (usuario != null) {
+                    auditoriaService.registrar(usuario,
+                            "ELIMINAR_ASIENTO",
+                            "Asiento ID: " + id);
+                }
             }
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error al eliminar: " + e.getMessage());
@@ -280,4 +274,3 @@ public class LibroDiarioController {
     }
 
 }
-

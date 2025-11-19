@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Nuevo Documento Fuente - Contabix</title>
     <link rel="stylesheet" th:href="@{/css/inicio.css}">
-
     <link rel="stylesheet" th:href="@{/css/documentos.css}">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -19,6 +18,8 @@
         <li><a th:href="@{/libro-diario}">Libro Diario</a></li>
         <li><a th:href="@{/libro-mayor}">Libro Mayor</a></li>
         <li><a th:href="@{/documentos}" class="active">Documentos Fuente</a></li>
+        <li><a th:href="@{/auditoria}" class="active">Auditoría</a></li>
+
         <li><a th:href="@{/admin/usuarios}">Gestión de Usuarios</a></li>
         <li><a th:href="@{/logout}">Cerrar sesión</a></li>
     </ul>
@@ -29,9 +30,20 @@
 
     <div class="form-container">
         <form th:action="@{/documentos}" method="post" enctype="multipart/form-data">
+
             <div class="form-group">
                 <label for="descripcion">Descripción (opcional):</label>
                 <textarea id="descripcion" name="descripcion" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="clasificacionId">Clasificación del documento:</label>
+                <select id="clasificacionId" name="clasificacionId">
+                    <option value="">-- Seleccione --</option>
+                    <option th:each="c : ${clasificaciones}"
+                            th:value="${c.id}"
+                            th:text="${c.nombre}"></option>
+                </select>
             </div>
 
             <div class="form-group">

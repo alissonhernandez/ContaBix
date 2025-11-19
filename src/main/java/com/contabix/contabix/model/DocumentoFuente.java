@@ -27,15 +27,14 @@ public class DocumentoFuente {
     @Column(name = "fecha_subida")
     private LocalDateTime fechaSubida;
 
-    public DocumentoFuente() {
-    }
+    // 🔹 Nueva relación: clasificación (Ingreso, Egreso, Factura, etc.)
+    @ManyToOne
+    @JoinColumn(name = "clasificacion_id")
+    private ClasificacionDocumento clasificacion;
 
-    @PrePersist
-    public void prePersist() {
+    public DocumentoFuente() {
         this.fechaSubida = LocalDateTime.now();
     }
-
-    // ===== Getters y setters =====
 
     public Integer getId() {
         return id;
@@ -83,5 +82,13 @@ public class DocumentoFuente {
 
     public void setFechaSubida(LocalDateTime fechaSubida) {
         this.fechaSubida = fechaSubida;
+    }
+
+    public ClasificacionDocumento getClasificacion() {
+        return clasificacion;
+    }
+
+    public void setClasificacion(ClasificacionDocumento clasificacion) {
+        this.clasificacion = clasificacion;
     }
 }

@@ -1,13 +1,14 @@
 package com.contabix.contabix.controller;
 
 import com.contabix.contabix.model.Usuario;
+import com.contabix.contabix.service.AuditoriaService;
 import com.contabix.contabix.service.UsuarioService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.servlet.http.HttpSession;
 import java.util.Optional;
 
 @Controller
@@ -15,19 +16,19 @@ public class AuthController {
 
     @Autowired
     private UsuarioService usuarioService;
-    // Servicio que maneja la lógica de usuarios: registro, login y consultas a la base de datos
+
+    @Autowired
+    private AuditoriaService auditoriaService;   // 👈 importante para registrar LOGIN
 
     // --- Mostrar formulario de login ---
     @GetMapping("/login")
     public String loginForm() {
-        // Retorna la vista login.html para que el usuario ingrese sus credenciales
         return "login";
     }
 
     // --- Mostrar formulario de registro ---
     @GetMapping("/registro")
     public String registroForm() {
-        // Retorna la vista registro.html para crear un nuevo usuario
         return "registro";
     }
 
@@ -41,6 +42,7 @@ public class AuthController {
                            @RequestParam String esAdmin,
                            @RequestParam(required = false) String claveAdmin,
                            Model model) {
+
         if (nombre.isBlank() || apellido.isBlank() || correo.isBlank() || contrasena.isBlank()) {
             model.addAttribute("error", "Todos los campos son obligatorios");
             return "registro";
@@ -69,15 +71,14 @@ public class AuthController {
             nuevo.setCorreo(correo);
             nuevo.setContrasena(contrasena);
 
-            // Si elige ser administrador, validar clave especial
             if ("si".equalsIgnoreCase(esAdmin)) {
-                if (!"claveAdminContabix".equals(claveAdmin)) { // clave fija para admin
+                if (!"claveAdminContabix".equals(claveAdmin)) {
                     model.addAttribute("error", "Contraseña de administrador incorrecta");
                     return "registro";
                 }
                 usuarioService.registrarComoAdmin(nuevo);
             } else {
-                usuarioService.registrar(nuevo); // Por defecto se registra como auditor
+                usuarioService.registrar(nuevo);  // se registra como auditor por defecto
             }
 
             model.addAttribute("mensaje", "Usuario registrado correctamente");
@@ -89,57 +90,58 @@ public class AuthController {
         }
     }
 
-
-    // --- Procesar login de usuario ---
+    // --- Procesar login de usuario + AUDITORÍA ---
     @PostMapping("/login")
     public String login(@RequestParam String correo,
                         @RequestParam String contrasena,
                         HttpSession session,
                         Model model) {
 
-        // Intentar iniciar sesión con el correo y contraseña proporcionados
-        Optional<Usuario> usuario = usuarioService.login(correo, contrasena);
+        Optional<Usuario> usuarioOpt = usuarioService.login(correo, contrasena);
 
-        if (usuario.isPresent()) {
-            // Guardar usuario en sesión para mantener el login activo
-            session.setAttribute("usuario", usuario.get());
-            return "redirect:/inicio"; // Redirige a la página de inicio
-        } else {
-            // Si las credenciales son incorrectas, mostrar error
+        if (usuarioOpt.isEmpty()) {
             model.addAttribute("error", "Correo o contraseña incorrectos");
-            return "login"; // Retorna al formulario de login
+            return "login";
         }
+
+        Usuario usuario = usuarioOpt.get();
+        session.setAttribute("usuario", usuario);
+
+        // Registrar en bitácora
+        auditoriaService.registrar(
+                usuario,
+                "LOGIN",
+                "El usuario inició sesión."
+        );
+
+        return "redirect:/inicio";
     }
 
-    // --- Mostrar página de inicio ---
+    // --- Página de inicio ---
     @GetMapping("/inicio")
-    public String inicio(HttpSession session, Model model,
+    public String inicio(HttpSession session,
+                         Model model,
                          @RequestParam(required = false) String mensaje) {
 
-        // Obtener usuario actual desde la sesión
         Usuario usuario = (Usuario) session.getAttribute("usuario");
 
-        // Si no hay usuario logueado, redirigir al login
         if (usuario == null) {
             return "redirect:/login";
         }
 
-        // Pasar usuario a la vista para mostrar información personalizada
         model.addAttribute("usuario", usuario);
 
-        // Mostrar mensaje opcional (por ejemplo, "Registro exitoso")
         if (mensaje != null) {
             model.addAttribute("mensaje", mensaje);
         }
 
-        return "inicio"; // Retorna la vista inicio.html
+        return "inicio";
     }
 
     // --- Cerrar sesión ---
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        // Invalida la sesión para cerrar sesión del usuario
         session.invalidate();
-        return "redirect:/login"; // Redirige al login
+        return "redirect:/login";
     }
 }
