@@ -1,152 +1,97 @@
-/* ESTILOS PARA EL LIBRO MAYOR */
-
-html, body {
-    height: 100%;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
+/* ============================
+    TÍTULO
+============================ */
+.text-center {
+    text-align: center;
 }
 
-.main-content {
-    flex: 1;
-}
-.main-content {
-        max-width: 900px;
-        margin: 40px auto;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        color: #333;
-    }
-
-    .text-center {
-        text-align: center;
-    }
-
-    .mb-4 {
-        margin-bottom: 1.5rem;
-    }
-
-    .account-title {
-        font-size: 1.2rem;
-        font-weight: bold;
-        color: #2a6592;
-        border-left: 5px solid #2a6592;
-        padding-left: 10px;
-    }
-
-    .table-container {
-        background: #ffffff;
-        border-radius: 10px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        padding: 20px;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.95rem;
-    }
-
-    thead {
-        background: #2a6592;
-        color: white;
-    }
-
-    th, td {
-        padding: 10px 12px;
-        border: 1px solid #ddd;
-        text-align: center;
-    }
-
-    tbody tr:nth-child(even) {
-        background-color: #f8f9fa;
-    }
-
-    tbody tr:hover {
-        background-color: #e9f5ff;
-        transition: background 0.3s ease;
-    }
-
-    td:nth-child(3),
-    td:nth-child(4),
-    td:nth-child(5) {
-        font-family: monospace;
-        color: #444;
-    }
-
-    .table-container:last-child {
-        margin-bottom: 50px;
-    }
-
-    @media (max-width: 768px) {
-        table {
-            font-size: 0.85rem;
-        }
-
-        .account-title {
-            font-size: 1rem;
-        }
-    }
-
-/* Footer */
- footer {
-            background-color: var(--color-secundario);
-            color: var(--color-blanco);
-            text-align: center;
-            padding: 15px;
-            border-top: 2px solid var(--color-acento);
-            font-size: 0.9em;
-        }
-
-/* Responsive */
-@media screen and (max-width: 768px) {
-    .nav-links {
-        flex-direction: column;
-        width: 100%;
-        max-height: 0;
-        overflow: hidden;
-        background-color: rgba(35,76,88,0.95);
-        transition: max-height 0.3s ease-in-out;
-    }
-
-    .nav-links.active {
-        max-height: 300px;
-    }
-
-    .nav-links li {
-        margin: 10px 0;
-        text-align: center;
-    }
-
-    .hamburger {
-        display: block;
-    }
-
-    .features {
-        flex-direction: column;
-        align-items: center;
-    }
+h3 {
+    color: #0f172a;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
 }
 
-@media screen and (max-width: 768px) {
-    .nav-links {
-        flex-direction: column;
-        width: 100%;
-        max-height: 0;
-        overflow: hidden;
-        background-color: rgba(35,76,88,0.95);
-        transition: max-height 0.3s ease-in-out;
-    }
+/* ============================
+   CONTENEDORES
+============================ */
+.table-container {
+    background: #ffffff;
+    padding: 1.8rem;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+}
 
-    .nav-links.active {
-        max-height: 300px;
-    }
+/* ============================
+   TÍTULO DE LA CUENTA
+============================ */
+.account-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1d4ed8;
+    margin-bottom: 1rem;
+}
 
-    .nav-links li {
-        margin: 10px 0;
-        text-align: center;
-    }
+/* ============================
+   TABLA
+============================ */
+.mayor-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 0.8rem;
+    overflow: hidden;
+    background: white;
+}
 
-    .hamburger {
-        display: block;
-    }
+.mayor-table thead th {
+    background: #1d4ed8;
+    color: white;
+    padding: 0.8rem;
+    font-weight: 600;
+    border-bottom: 3px solid #0f172a;
+}
+
+.mayor-table td,
+.mayor-table th {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 0.95rem;
+}
+
+.mayor-table tbody tr:hover {
+    background: #eef2ff;
+}
+
+.mayor-table tbody tr:nth-child(even) {
+    background: #f8fafc;
+}
+
+/* ============================
+   TABLA FINAL
+============================ */
+.resumen-final h2 {
+    color: #0f172a;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.total-general-row {
+    background: #0f172a;
+    color: #fbbf24;
+    font-weight: 700;
+    font-size: 1.05rem;
+}
+
+.total-general-row td {
+    padding: 1rem;
+    border: none;
+}
+
+/* Sin registros */
+.sin-registros p {
+    padding: 1rem;
+    color: #444;
+    font-weight: 500;
 }

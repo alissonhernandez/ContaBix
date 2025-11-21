@@ -169,17 +169,21 @@ tbody tr:hover {
    TOTAL GENERAL
 ================================ */
 .total-row {
-    background: #1d4ed8;
-    color: #ffffff;
+    background: #0f1b38 !important;
+    color: #ffffff !important;
     font-weight: 700;
 }
 
 .total-row td {
-    padding: 1rem;
-    font-size: 1rem;
+    color: #ffffff !important;
+    padding: 1.1rem;
+    font-size: 1.05rem;
     border: none;
 }
 
+.total-row:hover {
+    background: #0f1b38 !important;
+}
 /* ================================
    ACCIONES
 ================================ */
