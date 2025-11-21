@@ -25,6 +25,4 @@ public class EstadoResultadosController {
         model.addAttribute("estado", estado);
         return "estado-resultados";
     }
-
-
 }

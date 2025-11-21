@@ -1,535 +1,269 @@
-/* ===== Fondo general ===== */
-body {
-  background: #f2f6fc;
-  font-family: 'Segoe UI', sans-serif;
-  color: #333;
-  margin: 0;
-  padding: 0;
+/* ================================
+   CONTENEDOR GENERAL
+================================ */
+.main-content {
+    padding: 2rem;
 }
 
-/* ===== Navbar ===== */
-.navbar {
-  background-color: #234c58;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  color: #fff;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-}
-.hamburger {
-    display: none;
-    font-size: 28px;
-    color: var(--color-blanco);
-    cursor: pointer;
-    margin-left: auto;
+/* Título */
+h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 1.5rem;
 }
 
-.navbar .logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.nav-links {
-  list-style: none;
-  display: flex;
-  gap: 20px;
-  margin: 0;
-  padding: 0;
-}
-
-.nav-links li a {
-  color: #fff;
-  text-decoration: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  transition: background 0.2s ease;
-}
-
-.nav-links li a.active,
-.nav-links li a:hover {
-  background-color: #153a67;
-}
-
-/* ===== Formulario de filtros ===== */
+/* ================================
+   FORMULARIO DE FILTROS
+================================ */
 form {
-  background: #fff;
-  width: 1100px;
-  margin: 40px auto 20px;
-  padding: 20px 30px;
-  border-radius: 16px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 15px;
-  flex-wrap: wrap;
-  box-sizing: border-box;
+    background: #ffffff;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
+    display: flex;
+    gap: 1.2rem;
+    flex-wrap: wrap;
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-width: 180px;
+form .form-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+    flex: 1;
 }
 
 form label {
-  font-weight: 600;
-  color: #1d4e89;
-  margin-bottom: 6px;
-  font-size: 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: #0f172a;
 }
 
-form input[type="date"],
-form input[type="text"] {
-  padding: 10px 12px;
-  border: 1px solid #ccd6e0;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  transition: border 0.2s ease;
-  width: 100%;
-  box-sizing: border-box;
+form input {
+    border: 1px solid #cbd5e1;
+    border-radius: 0.6rem;
+    padding: 0.55rem 0.8rem;
+    font-size: 0.9rem;
+    background-color: #f9fafb;
+    outline: none;
+    transition: 0.2s ease-in-out;
 }
 
 form input:focus {
-  border-color: #1d4e89;
-  outline: none;
+    border-color: #1d4ed8;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.22);
+    background: #ffffff;
 }
 
+/* Botones del filtro */
 form button,
 form a {
-  background: #1d4e89;
-  color: #fff;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-  text-decoration: none;
-  display: inline-block;
+    padding: 0.65rem 1.2rem;
+    border-radius: 0.6rem;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background 0.25s ease, transform 0.15s ease;
 }
 
-form button:hover,
-form a:hover {
-  background: #153a67;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(29, 78, 137, 0.3);
+form button {
+    background: #1d4ed8;
+    color: #ffffff;
+}
+
+form button:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
 }
 
 form a {
-  background: #757575;
+    background: #6b7280;
+    color: #fff;
 }
 
 form a:hover {
-  background: #616161;
+    background: #4b5563;
+    transform: translateY(-1px);
 }
 
-/* ===== Mensajes de alerta ===== */
-.alert-success {
-  background: #4CAF50;
-  color: white;
-  padding: 15px;
-  margin: 20px auto;
-  width: 1100px;
-  box-sizing: border-box;
-  border-radius: 8px;
-  text-align: center;
-  font-weight: 500;
-}
-
-.alert-danger {
-  background: #f44336;
-  color: white;
-  padding: 15px;
-  margin: 20px auto;
-  width: 1100px;
-  box-sizing: border-box;
-  border-radius: 8px;
-  text-align: center;
-  font-weight: 500;
-}
-
-/* ===== Tabla principal ===== */
+/* ================================
+   TABLA PRINCIPAL
+================================ */
 table {
-  width: 1100px;
-  margin: 30px auto;
-  border-collapse: collapse;
-  background: #fff;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-  box-sizing: border-box;
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 1rem;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+    border: 1px solid #e5e7eb;
 }
 
-thead {
-  background: #1d4e89;
-  color: #fff;
+/* ENCABEZADOS */
+thead tr {
+    background: #1d4ed8;
 }
 
-th {
-  padding: 14px 15px;
-  text-align: center;
-  font-weight: 600;
-  font-size: 0.95rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+thead th {
+    color: #ffffff;
+    padding: 0.9rem;
+    font-weight: 600;
+    border-bottom: 3px solid #0f172a;
 }
 
-/* Alineación específica de encabezados */
-th:nth-child(1) { text-align: center; width: 100px; } /* Fecha */
-th:nth-child(2) { text-align: left; width: 200px; } /* Descripción */
-th:nth-child(3) { text-align: center; width: 120px; } /* Usuario */
-th:nth-child(4) { text-align: left; } /* Cuenta */
-th:nth-child(5) { text-align: right; width: 120px; } /* Debe */
-th:nth-child(6) { text-align: right; width: 120px; } /* Haber */
-th:nth-child(7) { text-align: center; width: 180px; } /* Acciones */
-
-/* ===== Filas de datos ===== */
+/* CUERPO */
 tbody td {
-  padding: 12px 15px;
-  border: 1px solid #e5eaf1;
-  color: #2c3e50;
-  vertical-align: top;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    color: #1f2937;
 }
 
-/* Alineación de celdas de datos */
-tbody td:nth-child(1) {
-  text-align: center;
-  font-weight: 500;
-  color: #1d4e89;
+/* Alternancia */
+tbody tr:nth-child(even) {
+    background: #f8fafc;
 }
 
-tbody td:nth-child(2) {
-  text-align: left;
-  font-weight: 500;
+/* Hover fila principal */
+tbody tr:hover {
+    background: #eef2ff;
 }
 
-tbody td:nth-child(3) {
-  text-align: center;
-  color: #555;
-}
-
-tbody td:nth-child(7) {
-  text-align: center;
-}
-
-/* ===== Fila de asiento con borde inferior marcado ===== */
-.asiento-row {
-  border-bottom: 2px solid #1d4e89;
-}
-
-/* ===== Subtabla de detalles ===== */
+/* ================================
+   SUBTABLA DE DETALLES
+================================ */
 .sub-cuentas {
-  padding: 0 !important;
+    padding: 0;
 }
 
 .tabla-detalle {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 0;
-}
-
-.tabla-detalle tbody {
-  display: block;
-}
-
-.tabla-detalle tr {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
 }
 
 .tabla-detalle td {
-  border: none;
-  border-bottom: 1px solid #f5f5f5;
-  padding: 8px 12px;
-  font-size: 0.92rem;
+    padding: 0.45rem 0.6rem;
+    font-size: 0.88rem;
+    border-bottom: 1px solid #e5e7eb;
 }
 
-.tabla-detalle tr:last-child td {
-  border-bottom: none;
-}
-
-/* Distribución de columnas en subtabla */
-.tabla-detalle td:nth-child(1) {
-  width: 50%;
-  text-align: left;
-  color: #1d4e89;
-  font-weight: 500;
-  padding-left: 15px;
-}
-
-.tabla-detalle td:nth-child(2) {
-  width: 25%;
-  text-align: right;
-  color: #333;
-  font-weight: 500;
-  padding-right: 15px;
-}
-
-.tabla-detalle td:nth-child(3) {
-  width: 25%;
-  text-align: right;
-  color: #333;
-  font-weight: 500;
-  padding-right: 15px;
-}
-
-/* ===== Fila de subtotales ===== */
+/* ================================
+   FILA DE SUBTOTAL POR ASIENTO
+================================ */
 .subtotal-row {
-  background-color: #f0f4f8;
-  font-weight: bold;
+    background: #f1f5f9;
+    font-weight: 700;
 }
 
 .subtotal-row td {
-  padding: 10px 15px;
-  border: 1px solid #d0d9e3;
+    padding: 0.9rem;
+    color: #1f2937;
 }
 
-.subtotal-row td:nth-child(1) {
-  text-align: right;
-  color: #1d4e89;
-}
-
-.subtotal-row td:nth-child(2),
-.subtotal-row td:nth-child(3) {
-  text-align: right;
-  font-size: 1rem;
-  color: #333;
-  font-weight: 600;
-}
-
-/* ===== Fila de totales generales ===== */
+/* ================================
+   TOTAL GENERAL
+================================ */
 .total-row {
-  background-color: #fff !important; /* mismo color que la tabla */
-  color: #000; /* texto negro */
-  font-weight: bold;
-  font-size: 1.1em;
+    background: #1d4ed8;
+    color: #ffffff;
+    font-weight: 700;
 }
 
 .total-row td {
-  padding: 15px;
-  border: 1px solid #1d4e89;
+    padding: 1rem;
+    font-size: 1rem;
+    border: none;
 }
 
-.total-row td:nth-child(1) {
-  text-align: right;
-}
-
-.total-row td:nth-child(2),
-.total-row td:nth-child(3) {
-  text-align: right;
-  font-size: 1.15rem;
-}
-
-
-/* ===== Botones de acciones ===== */
-.acciones {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  align-items: center;
-}
-
-.btn-editar,
-.btn-eliminar {
-  padding: 8px 16px;
-  border-radius: 6px;
-  text-decoration: none;
-  font-size: 0.85rem;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.btn-editar {
-  background: #4CAF50;
-  color: white;
-}
-
-.btn-eliminar {
-  background: #f44336;
-  color: white;
-}
-
-.btn-editar:hover {
-  background: #45a049;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
-}
-
-.btn-eliminar:hover {
-  background: #da190b;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(244, 67, 54, 0.3);
-}
-
-/* ===== Botón nuevo asiento ===== */
-.btn {
-  display: block;
-  width: fit-content;
-  margin: 30px auto 60px;
-  background: #4CAF50;
-  color: #fff;
-  text-decoration: none;
-  padding: 14px 28px;
-  font-weight: 600;
-  font-size: 1rem;
-  border-radius: 10px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
-}
-
-.btn:hover {
-  background: #45a049;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
-}
-
-/* ===== Footer ===== */
-footer {
-  background-color: #234c58;
-  color: #ffffff;
-  text-align: center;
-  margin-top: 40px;
-  font-size: 0.9rem;
-  padding: 20px 0;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-}
-
-/* ===== Responsive ===== */
-@media (max-width: 1150px) {
-  table, form, .alert-success, .alert-danger {
-    width: 95%;
-  }
-}
-
-@media (max-width: 768px) {
-  form {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .form-group {
-    min-width: 100%;
-  }
-
-  table {
-    font-size: 0.85rem;
-  }
-
-  .acciones {
-    flex-direction: column;
-  }
-}
-
-@media screen and (max-width: 768px) {
-    .nav-links {
-        flex-direction: column;
-        width: 100%;
-        max-height: 0;
-        overflow: hidden;
-        background-color: rgba(35,76,88,0.95);
-        transition: max-height 0.3s ease-in-out;
-    }
-
-    .nav-links.active {
-        max-height: 300px;
-    }
-
-    .nav-links li {
-        margin: 10px 0;
-        text-align: center;
-    }
-
-    .hamburger {
-        display: block;
-    }
-}
-.form-container {
-  max-width: 600px;
-  margin: 30px auto;
-  background: #ffffff;
-  padding: 25px 30px;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-}
-
-.form-group {
-  margin-bottom: 15px;
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group label {
-  font-weight: 600;
-  margin-bottom: 6px;
-  color: #1d4e89;
-}
-
-.form-group input[type="file"],
-.form-group textarea {
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid #ccd6e0;
-  font-size: 0.95rem;
-}
-
-.form-group textarea {
-  resize: vertical;
-}
-
-.form-actions {
-  margin-top: 15px;
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-}
-
-.btn-secundario {
-  background: #757575;
-}
-
-.btn-secundario:hover {
-  background: #616161;
-}
+/* ================================
+   ACCIONES
+================================ */
 .acciones {
     display: flex;
-    gap: 8px;
-    justify-content: center;
-    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
 .btn-editar,
-.btn-eliminar,
-.btn-documento {
-    padding: 8px 16px;
-    border-radius: 6px;
+.btn-eliminar {
+    padding: 0.45rem 0.8rem;
+    border-radius: 0.6rem;
     text-decoration: none;
     font-size: 0.85rem;
     font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
+    display: inline-block;
+    transition: 0.2s ease-in-out;
 }
 
-.btn-documento {
-    background: #17a2b8;
-    color: white;
+.btn-editar {
+    background: #1d4ed8;
+    color: #ffffff;
 }
 
-.btn-documento:hover {
-    background: #148a9c;
+.btn-editar:hover {
+    background: #2563eb;
+}
+
+.btn-eliminar {
+    background: #d9534f;
+    color: #ffffff;
+}
+
+.btn-eliminar:hover {
+    background: #c9302c;
+}
+
+/* ================================
+   BOTÓN NUEVO ASIENTO
+================================ */
+.btn {
+    display: block;
+    width: 200px;
+    margin: 0 auto;
+    background: #1d4ed8;
+    color: #ffffff;
+    padding: 0.8rem 1.4rem;
+    border-radius: 0.7rem;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.95rem;
+    text-align: center;
+    transition: background 0.25s ease, transform 0.15s ease;
+    box-shadow: 0 5px 14px rgba(29, 78, 216, 0.25);
+}
+
+.btn:hover {
+    background: #2563eb;
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(23, 162, 184, 0.3);
 }
+
+/* ================================
+   RESPONSIVE ADAPTADO
+================================ */
+@media (max-width: 900px) {
+
+    form {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    table,
+    thead,
+    tbody,
+    th,
+    td {
+        font-size: 0.85rem;
+    }
+
+    .btn,
+    btn-editar,
+    btn-eliminar {
+        font-size: 0.85rem;
+    }
+}
+

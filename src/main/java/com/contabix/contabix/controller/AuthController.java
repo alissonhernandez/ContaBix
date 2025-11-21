@@ -18,7 +18,7 @@ public class AuthController {
     private UsuarioService usuarioService;
 
     @Autowired
-    private AuditoriaService auditoriaService;   // 👈 importante para registrar LOGIN
+    private AuditoriaService auditoriaService;
 
     // --- Mostrar formulario de login ---
     @GetMapping("/login")
