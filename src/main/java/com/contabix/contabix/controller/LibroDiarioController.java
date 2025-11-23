@@ -5,10 +5,14 @@ import com.contabix.contabix.model.CuentaContable;
 import com.contabix.contabix.model.DetalleAsiento;
 import com.contabix.contabix.model.DocumentoFuente;
 import com.contabix.contabix.model.Usuario;
-import com.contabix.contabix.repository.*;
+import com.contabix.contabix.repository.AsientoRepository;
+import com.contabix.contabix.repository.CuentaContableRepository;
+import com.contabix.contabix.repository.DocumentoFuenteRepository;
+import com.contabix.contabix.repository.UsuarioRepository;
 import com.contabix.contabix.service.AsientoService;
-import com.contabix.contabix.service.LibroMayorService;
 import com.contabix.contabix.service.AuditoriaService;
+import com.contabix.contabix.service.LibroMayorService;
+import com.contabix.contabix.util.SecurityUtils;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -21,10 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/libro-diario")
@@ -51,21 +52,25 @@ public class LibroDiarioController {
     @Autowired
     private AuditoriaService auditoriaService;
 
-    // ✅ Listado con filtros y sumas
+    // Listado con filtros y sumas (admin + contador)
     @GetMapping
     public String listar(
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate inicio,
-
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate fin,
-
             @RequestParam(required = false)
             String q,
+            Model model,
+            HttpSession session,
+            RedirectAttributes ra) {
 
-            Model model) {
+        if (!SecurityUtils.tieneRol(session, "admin", "contador")) {
+            ra.addFlashAttribute("error", "No tienes permiso para acceder al Libro Diario.");
+            return "redirect:/inicio";
+        }
 
         List<Asiento> asientos;
 
@@ -110,7 +115,6 @@ public class LibroDiarioController {
         model.addAttribute("inicio", inicio);
         model.addAttribute("fin", fin);
         model.addAttribute("q", q);
-
         model.addAttribute("subtotalDebeMap", subtotalDebeMap);
         model.addAttribute("subtotalHaberMap", subtotalHaberMap);
         model.addAttribute("totalDebe", totalDebe);
@@ -119,9 +123,17 @@ public class LibroDiarioController {
         return "libro-diario-list";
     }
 
-    // ✅ Formulario nuevo asiento
+    // Formulario nuevo asiento (admin + contador)
     @GetMapping("/nuevo")
-    public String nuevoAsiento(Model model) {
+    public String nuevoAsiento(Model model,
+                               HttpSession session,
+                               RedirectAttributes ra) {
+
+        if (!SecurityUtils.tieneRol(session, "admin", "contador")) {
+            ra.addFlashAttribute("error", "No tienes permiso para registrar asientos.");
+            return "redirect:/libro-diario";
+        }
+
         Asiento asiento = new Asiento();
         asiento.setFecha(LocalDate.now());
         asiento.setDetalles(new ArrayList<>());
@@ -134,9 +146,18 @@ public class LibroDiarioController {
         return "libro-diario-form";
     }
 
-    // ✅ Formulario editar asiento
+    // Formulario editar asiento (admin + contador)
     @GetMapping("/editar/{id}")
-    public String editarAsiento(@PathVariable Integer id, Model model, RedirectAttributes redirectAttributes) {
+    public String editarAsiento(@PathVariable Integer id,
+                                Model model,
+                                RedirectAttributes redirectAttributes,
+                                HttpSession session) {
+
+        if (!SecurityUtils.tieneRol(session, "admin", "contador")) {
+            redirectAttributes.addFlashAttribute("error", "No tienes permiso para editar asientos.");
+            return "redirect:/libro-diario";
+        }
+
         Asiento asiento = asientoRepository.findById(id).orElse(null);
 
         if (asiento == null) {
@@ -155,7 +176,7 @@ public class LibroDiarioController {
         return "libro-diario-form";
     }
 
-    // ✅ Guardar asiento (nuevo o editado) + documento fuente opcional
+    // Guardar asiento (nuevo o editado) (admin + contador)
     @PostMapping("/guardar")
     public String guardarAsiento(@ModelAttribute("asiento") Asiento asiento,
                                  BindingResult bindingResult,
@@ -164,7 +185,13 @@ public class LibroDiarioController {
                                  RedirectAttributes redirectAttributes,
                                  HttpSession session) {
 
+        if (!SecurityUtils.tieneRol(session, "admin", "contador")) {
+            redirectAttributes.addFlashAttribute("error", "No tienes permiso para guardar asientos.");
+            return "redirect:/libro-diario";
+        }
+
         try {
+            // 👉 SOLO UNA VEZ
             Usuario usuario = (Usuario) session.getAttribute("usuario");
 
             if (usuario == null) {
@@ -223,7 +250,7 @@ public class LibroDiarioController {
             // ACTUALIZAR LIBRO MAYOR
             libroMayorService.actualizarLibroMayor();
 
-            // Registrar en bitácora de auditoría
+            // Auditoría (reutilizamos la misma variable usuario)
             auditoriaService.registrar(usuario,
                     "GUARDAR_ASIENTO",
                     "Asiento ID: " + asiento.getId());
@@ -247,11 +274,17 @@ public class LibroDiarioController {
         return "libro-diario-form";
     }
 
-    // ✅ Eliminar asiento
+    // Eliminar asiento (admin + contador)
     @GetMapping("/eliminar/{id}")
     public String eliminarAsiento(@PathVariable Integer id,
                                   RedirectAttributes redirectAttributes,
                                   HttpSession session) {
+
+        if (!SecurityUtils.tieneRol(session, "admin", "contador")) {
+            redirectAttributes.addFlashAttribute("error", "No tienes permiso para eliminar asientos.");
+            return "redirect:/libro-diario";
+        }
+
         try {
             Asiento asiento = asientoRepository.findById(id).orElse(null);
             if (asiento == null) {

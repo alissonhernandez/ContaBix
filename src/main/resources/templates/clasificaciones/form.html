@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${titulo}">Clasificación</title>
+
+    <link rel="stylesheet" th:href="@{/css/inicio.css}">
+    <link rel="stylesheet" th:href="@{/css/documentos.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+
+<div class="dashboard">
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-circle">
+                <img th:src="@{/img/contabixlogo.png}" alt="Logo Contabix">
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a th:href="@{/inicio}"><i class="bi bi-house-door"></i><span>Inicio</span></a></li>
+                <li><a th:href="@{/perfil}"><i class="bi bi-person-circle"></i><span>Perfil</span></a></li>
+                <li><a th:href="@{/libro-diario}"><i class="bi bi-journal-text"></i><span>Libro Diario</span></a></li>
+                <li><a th:href="@{/libro-mayor}"><i class="bi bi-bar-chart-line"></i><span>Libro Mayor</span></a></li>
+                <li><a th:href="@{/estado-resultados}"><i class="bi bi-graph-up-arrow"></i><span>Estado de Resultados</span></a></li>
+                <li><a th:href="@{/balance-comprobacion}"><i class="bi bi-list-columns-reverse"></i><span>Balance de Comprobación</span></a></li>
+                <li><a th:href="@{/documentos}"><i class="bi bi-file-earmark-text"></i><span>Documentos Fuente</span></a></li>
+
+                <li class="active">
+                    <a th:href="@{/clasificaciones}">
+                        <i class="bi bi-tags"></i><span>Clasificaciones</span>
+                    </a>
+                </li>
+
+                <li><a th:href="@{/auditoria}"><i class="bi bi-shield-check"></i><span>Auditoría</span></a></li>
+                <li class="logout"><a th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i><span>Cerrar Sesión</span></a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+
+        <h1 th:text="${titulo}">Clasificación</h1>
+
+        <div class="form-container">
+            <form th:action="@{/clasificaciones/guardar}" th:object="${clasificacion}" method="post">
+
+                <!-- IMPORTANTE: el id SE LLAMA id -->
+                <input type="hidden" th:field="*{id}"/>
+
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text" th:field="*{nombre}" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea th:field="*{descripcion}" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Activo</label>
+                    <select th:field="*{activo}">
+                        <option th:value="true">Sí</option>
+                        <option th:value="false">No</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn">Guardar</button>
+                    <a th:href="@{/clasificaciones}" class="btn btn-secundario">Cancelar</a>
+                </div>
+
+            </form>
+        </div>
+
+        <footer class="main-footer">
+            <p>&copy; 2025 Contabix. Todos los derechos reservados.</p>
+        </footer>
+
+    </main>
+</div>
+
+<script>
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('sidebar-open');
+        });
+    }
+</script>
+
+</body>
+</html>

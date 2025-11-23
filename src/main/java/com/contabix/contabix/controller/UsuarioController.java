@@ -24,49 +24,42 @@ import java.util.List;
 public class UsuarioController {
 
     @Autowired
-    private UsuarioRepository usuarioRepository; // Repositorio para operaciones CRUD de Usuario
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private RolRepository rolRepository; // Repositorio para operaciones CRUD de Rol
+    private RolRepository rolRepository;
 
-    /**
-     * Mostrar el perfil del usuario que ha iniciado sesión.
-     * Redirige al login si no hay usuario en sesión.
-     */
+    // Mostrar el perfil del usuario en sesión
     @GetMapping("/perfil")
     public String perfil(HttpSession session, Model model) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario == null) {
-            return "redirect:/login"; // Si no hay sesión, redirige a login
+            return "redirect:/login";
         }
         model.addAttribute("usuario", usuario);
-        return "perfil"; // Retorna la vista perfil.html
+        return "perfil";
     }
 
-    /**
-     * Mostrar el perfil de otro usuario (solo accesible por admin).
-     * @param id ID del usuario a mostrar
-     */
+    // Mostrar perfil de otro usuario (solo admin)
     @GetMapping("/perfilUsuario")
     public String perfilUsuario(@RequestParam Long id, HttpSession session, Model model) {
         Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
         if (usuarioSesion == null) {
             return "redirect:/login";
         }
-        // Solo el admin puede ver perfiles de otros usuarios
         if (!usuarioSesion.getRol().getNombre().equalsIgnoreCase("admin")) {
             return "redirect:/inicio";
         }
 
         Usuario usuario = usuarioRepository.findById(id).orElse(null);
         if (usuario == null) {
-            return "redirect:/admin/usuarios"; // Redirige si el usuario no existe
+            return "redirect:/admin/usuarios";
         }
         model.addAttribute("usuario", usuario);
-        return "perfil"; // Reutiliza la vista perfil.html
+        return "perfil";
     }
 
-    /** Libro Diario */
+    // Rutas antiguas, solo validan sesión
     @GetMapping("/librodiario")
     public String libroDiario(HttpSession session) {
         if (session.getAttribute("usuario") == null) {
@@ -75,7 +68,6 @@ public class UsuarioController {
         return "librodiario";
     }
 
-    /** Libro Mayor */
     @GetMapping("/libromayor")
     public String libroMayor(HttpSession session) {
         if (session.getAttribute("usuario") == null) {
@@ -84,10 +76,7 @@ public class UsuarioController {
         return "libromayor";
     }
 
-    /**
-     * Listar todos los usuarios (solo admin).
-     * Muestra además los roles disponibles para poder asignar.
-     */
+    // Listar usuarios (solo admin)
     @GetMapping("/admin/usuarios")
     public String listarUsuarios(HttpSession session, Model model) {
         Usuario usuarioSesion = (Usuario) session.getAttribute("usuario");
@@ -100,17 +89,13 @@ public class UsuarioController {
 
         List<Usuario> usuarios = usuarioRepository.findAll();
         List<Rol> roles = rolRepository.findAll();
-        model.addAttribute("usuario", usuarioSesion); // Usuario que inició sesión
-        model.addAttribute("usuarios", usuarios);     // Lista de todos los usuarios
-        model.addAttribute("roles", roles);           // Lista de roles para selección
-        return "gestionar-usuarios"; // Vista para administrar usuarios
+        model.addAttribute("usuario", usuarioSesion);
+        model.addAttribute("usuarios", usuarios);
+        model.addAttribute("roles", roles);
+        return "gestionar-usuarios";
     }
 
-    /**
-     * Cambiar el rol de un usuario específico (solo admin).
-     * @param id ID del usuario a modificar
-     * @param rolId ID del nuevo rol
-     */
+    // Cambiar rol (solo admin)
     @PostMapping("/admin/usuarios/{id}/rol")
     public String cambiarRol(@PathVariable Long id,
                              @RequestParam Long rolId,
@@ -136,13 +121,10 @@ public class UsuarioController {
 
         redirectAttributes.addFlashAttribute("mensaje",
                 "Rol actualizado correctamente para " + usuario.getNombre() + ".");
-        return "redirect:/admin/usuarios"; // Redirige a la lista de usuarios
+        return "redirect:/admin/usuarios";
     }
 
-    /**
-     * Eliminar un usuario específico (solo admin).
-     * @param id ID del usuario a eliminar
-     */
+    // Eliminar usuario (solo admin)
     @PostMapping("/admin/usuarios/{id}/eliminar")
     public String eliminarUsuario(@PathVariable Long id,
                                   HttpSession session,
@@ -164,6 +146,7 @@ public class UsuarioController {
         return "redirect:/admin/usuarios";
     }
 
+    // Actualizar perfil (solo el propio usuario)
     @PostMapping("/perfil/actualizar")
     public String actualizarPerfil(@RequestParam Long id,
                                    @RequestParam String nombre,
@@ -181,7 +164,6 @@ public class UsuarioController {
             return "redirect:/login";
         }
 
-        // Por seguridad, solo permite que el usuario edite su propio perfil
         if (!usuarioSesion.getId().equals(id)) {
             redirectAttributes.addFlashAttribute("error", "No puedes modificar el perfil de otro usuario.");
             return "redirect:/inicio";
@@ -198,12 +180,10 @@ public class UsuarioController {
         usuario.setUsuario(usuarioNombre);
         usuario.setCorreo(correo);
 
-        // Cambiar contraseña solo si se envía algo
         if (contrasenaNueva != null && !contrasenaNueva.isBlank()) {
             usuario.setContrasena(contrasenaNueva);
         }
 
-        // Guardar foto si se envió
         if (foto != null && !foto.isEmpty()) {
             String uploadsDir = "src/main/resources/static/uploads";
             Path uploadPath = Paths.get(uploadsDir);
@@ -220,12 +200,9 @@ public class UsuarioController {
         }
 
         usuarioRepository.save(usuario);
-
-        // Actualizar el usuario en sesión con los nuevos datos
         session.setAttribute("usuario", usuario);
 
         redirectAttributes.addFlashAttribute("mensaje", "Perfil actualizado correctamente.");
         return "redirect:/perfil";
     }
-
 }

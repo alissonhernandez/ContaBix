@@ -20,19 +20,16 @@ public class AuthController {
     @Autowired
     private AuditoriaService auditoriaService;
 
-    // --- Mostrar formulario de login ---
     @GetMapping("/login")
     public String loginForm() {
         return "login";
     }
 
-    // --- Mostrar formulario de registro ---
     @GetMapping("/registro")
     public String registroForm() {
         return "registro";
     }
 
-    // --- Procesar registro de usuario ---
     @PostMapping("/registro")
     public String registro(@RequestParam String nombre,
                            @RequestParam String apellido,
@@ -90,7 +87,6 @@ public class AuthController {
         }
     }
 
-    // --- Procesar login de usuario + AUDITORÍA ---
     @PostMapping("/login")
     public String login(@RequestParam String correo,
                         @RequestParam String contrasena,
@@ -107,7 +103,6 @@ public class AuthController {
         Usuario usuario = usuarioOpt.get();
         session.setAttribute("usuario", usuario);
 
-        // Registrar en bitácora
         auditoriaService.registrar(
                 usuario,
                 "LOGIN",
@@ -117,7 +112,6 @@ public class AuthController {
         return "redirect:/inicio";
     }
 
-    // --- Página de inicio ---
     @GetMapping("/inicio")
     public String inicio(HttpSession session,
                          Model model,
@@ -138,7 +132,6 @@ public class AuthController {
         return "inicio";
     }
 
-    // --- Cerrar sesión ---
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();

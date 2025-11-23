@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Clasificaciones de Documentos - Contabix</title>
+
+    <link rel="stylesheet" th:href="@{/css/inicio.css}">
+</head>
+<body>
+
+<div class="dashboard">
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-circle">
+                <img th:src="@{/img/contabixlogo.png}" alt="Logo Contabix">
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a th:href="@{/inicio}"><i class="bi bi-house-door"></i><span>Inicio</span></a></li>
+                <li><a th:href="@{/perfil}"><i class="bi bi-person-circle"></i><span>Perfil</span></a></li>
+                <li><a th:href="@{/libro-diario}"><i class="bi bi-journal-text"></i><span>Libro Diario</span></a></li>
+                <li><a th:href="@{/libro-mayor}"><i class="bi bi-bar-chart-line"></i><span>Libro Mayor</span></a></li>
+                <li><a th:href="@{/estado-resultados}"><i class="bi bi-graph-up-arrow"></i><span>Estado de Resultados</span></a></li>
+                <li><a th:href="@{/balance-comprobacion}"><i class="bi bi-list-columns-reverse"></i><span>Balance de Comprobación</span></a></li>
+                <li><a th:href="@{/documentos}"><i class="bi bi-file-earmark-text"></i><span>Documentos Fuente</span></a></li>
+
+                <li class="active">
+                    <a th:href="@{/clasificaciones}">
+                        <i class="bi bi-tags"></i><span>Clasificaciones</span>
+                    </a>
+                </li>
+
+                <li><a th:href="@{/auditoria}"><i class="bi bi-shield-check"></i><span>Auditoría</span></a></li>
+                <li class="logout"><a th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i><span>Cerrar Sesión</span></a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+
+        <h1>Clasificaciones de Documentos</h1>
+
+        <div th:if="${success}" class="notification success">
+            <span th:text="${success}"></span>
+        </div>
+        <div th:if="${error}" class="notification error">
+            <span th:text="${error}"></span>
+        </div>
+
+        <div class="acciones-superior">
+            <a th:href="@{/clasificaciones/nuevo}" class="btn btn-primary">Nueva clasificación</a>
+            <a th:href="@{/documentos}" class="btn btn-secundario">Volver a Documentos Fuente</a>
+        </div>
+
+        <table class="tabla">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Activo</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="c : ${clasificaciones}">
+                <td th:text="${c.id}"></td>
+                <td th:text="${c.nombre}"></td>
+                <td th:text="${c.descripcion}"></td>
+                <td th:text="${c.activo ? 'Sí' : 'No'}"></td>
+                <td>
+                    <a th:href="@{'/clasificaciones/editar/' + ${c.id}}" class="btn btn-warning">Editar</a>
+                    <a th:href="@{'/clasificaciones/eliminar/' + ${c.id}}"
+                       onclick="return confirm('¿Eliminar clasificación?')"
+                       class="btn btn-danger">
+                        Eliminar
+                    </a>
+                </td>
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(clasificaciones)}">
+                <td colspan="5" style="text-align:center;">No hay clasificaciones registradas.</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <footer class="main-footer">
+            <p>&copy; 2025 Contabix. Todos los derechos reservados.</p>
+        </footer>
+
+    </main>
+</div>
+
+<script>
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('sidebar-open');
+        });
+    }
+</script>
+
+</body>
+</html>

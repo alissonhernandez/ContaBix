@@ -6,7 +6,9 @@ import com.contabix.contabix.model.Usuario;
 import com.contabix.contabix.repository.ClasificacionDocumentoRepository;
 import com.contabix.contabix.repository.DocumentoFuenteRepository;
 import com.contabix.contabix.service.AuditoriaService;
+import com.contabix.contabix.util.SecurityUtils;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,11 +35,18 @@ public class DocumentoFuenteController {
         this.auditoriaService = auditoriaService;
     }
 
-    // LISTAR DOCUMENTOS
+    // LISTAR DOCUMENTOS (admin + contador)
     @GetMapping
     public String listar(Model model,
                          @RequestParam(value = "success", required = false) String success,
-                         @RequestParam(value = "error", required = false) String error) {
+                         @RequestParam(value = "error", required = false) String error,
+                         HttpSession session,
+                         RedirectAttributes ra) {
+
+        if (!SecurityUtils.tieneRol(session, "admin", "contador")) {
+            ra.addFlashAttribute("error", "No tienes permiso para acceder a Documentos Fuente.");
+            return "redirect:/inicio";
+        }
 
         List<DocumentoFuente> documentos = documentoFuenteRepository.findAll();
 
@@ -48,21 +57,34 @@ public class DocumentoFuenteController {
         return "documentos-list";
     }
 
-    // FORMULARIO NUEVO
+    // FORMULARIO NUEVO (admin + contador)
     @GetMapping("/nuevo")
-    public String nuevo(Model model) {
+    public String nuevo(Model model,
+                        HttpSession session,
+                        RedirectAttributes ra) {
+
+        if (!SecurityUtils.tieneRol(session, "admin", "contador")) {
+            ra.addFlashAttribute("error", "No tienes permiso para subir documentos.");
+            return "redirect:/documentos";
+        }
+
         model.addAttribute("documento", new DocumentoFuente());
         model.addAttribute("clasificaciones", clasificacionDocumentoRepository.findAll());
         return "documentos-form";
     }
 
-    // GUARDAR (SUBIR PDF)
+    // GUARDAR (SUBIR PDF) (admin + contador)
     @PostMapping
     public String guardar(@RequestParam("archivo") MultipartFile archivo,
                           @RequestParam(value = "descripcion", required = false) String descripcion,
                           @RequestParam(value = "clasificacionId", required = false) Integer clasificacionId,
                           HttpSession session,
                           RedirectAttributes redirectAttributes) {
+
+        if (!SecurityUtils.tieneRol(session, "admin", "contador")) {
+            redirectAttributes.addFlashAttribute("error", "No tienes permiso para subir documentos.");
+            return "redirect:/documentos";
+        }
 
         if (archivo == null || archivo.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "Debe seleccionar un archivo PDF.");
@@ -85,7 +107,6 @@ public class DocumentoFuenteController {
 
             documentoFuenteRepository.save(doc);
 
-            // Registrar en auditoría
             Usuario usuario = (Usuario) session.getAttribute("usuario");
             auditoriaService.registrar(
                     usuario,
@@ -101,9 +122,15 @@ public class DocumentoFuenteController {
         return "redirect:/documentos";
     }
 
-    // DESCARGAR PDF
+    // DESCARGAR PDF (admin + contador)
     @GetMapping("/{id}/descargar")
-    public ResponseEntity<byte[]> descargar(@PathVariable Integer id) {
+    public ResponseEntity<byte[]> descargar(@PathVariable Integer id,
+                                            HttpSession session) {
+
+        if (!SecurityUtils.tieneRol(session, "admin", "contador")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         DocumentoFuente doc = documentoFuenteRepository.findById(id).orElse(null);
         if (doc == null) {
             return ResponseEntity.notFound().build();
@@ -115,11 +142,17 @@ public class DocumentoFuenteController {
                 .body(doc.getContenido());
     }
 
-    // ELIMINAR DOCUMENTO
+    // ELIMINAR DOCUMENTO (admin + contador)
     @GetMapping("/{id}/eliminar")
     public String eliminar(@PathVariable Integer id,
                            HttpSession session,
                            RedirectAttributes redirectAttributes) {
+
+        if (!SecurityUtils.tieneRol(session, "admin", "contador")) {
+            redirectAttributes.addFlashAttribute("error", "No tienes permiso para eliminar documentos.");
+            return "redirect:/documentos";
+        }
+
         if (documentoFuenteRepository.existsById(id)) {
             DocumentoFuente doc = documentoFuenteRepository.findById(id).orElse(null);
             documentoFuenteRepository.deleteById(id);
