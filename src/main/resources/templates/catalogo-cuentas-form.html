@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Libro Mayor - Contabix</title>
+    <title th:text="${titulo}">Cuenta Contable - Contabix</title>
 
     <link rel="stylesheet" th:href="@{/css/libro-diario-list.css}">
     <link rel="stylesheet" th:href="@{/css/inicio.css}">
@@ -10,6 +10,7 @@
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
+
 <body>
 
 <div id="notifications">
@@ -54,10 +55,24 @@
                     </a>
                 </li>
 
-                <li class="active">
+                <li>
                     <a th:href="@{/libro-mayor}">
                         <i class="bi bi-bar-chart-line"></i>
                         <span>Libro Mayor</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/balance-general}">
+                        <i class="bi bi-table"></i>
+                        <span>Balance General</span>
+                    </a>
+                </li>
+
+
+                <li>
+                    <a th:href="@{/estado-resultados}">
+                        <i class="bi bi-graph-up-arrow"></i>
+                        <span>Estado de Resultados</span>
                     </a>
                 </li>
 
@@ -69,20 +84,13 @@
                 </li>
 
                 <li>
-                    <a th:href="@{/estado-resultados}">
-                        <i class="bi bi-graph-up-arrow"></i>
-                        <span>Estado de Resultados</span>
-                    </a>
-                </li>
-
-                <li>
                     <a th:href="@{/balance-general}">
                         <i class="bi bi-table"></i>
                         <span>Balance General</span>
                     </a>
                 </li>
 
-                <li>
+                <li class="active">
                     <a th:href="@{/catalogo-cuentas}">
                         <i class="bi bi-card-list"></i>
                         <span>Catálogo de Cuentas</span>
@@ -113,7 +121,6 @@
         </nav>
     </aside>
 
-    <!-- CONTENIDO -->
     <main class="main-content">
 
         <button class="menu-toggle" id="menuToggle">
@@ -121,48 +128,56 @@
         </button>
 
         <section class="libro-diario-section">
-            <h1>Libro Mayor</h1>
+            <h1 th:text="${titulo}">Cuenta Contable</h1>
 
-            <!-- Una tarjeta por cada cuenta -->
-            <div th:each="reg : ${registros}" class="card mayor-card">
-                <div class="mayor-header">
-                    <h2 th:text="${reg.cuentaContable.codigo + ' - ' + reg.cuentaContable.nombre}">
-                        1101 - Caja
-                    </h2>
-                </div>
+            <div class="card">
+                <form th:action="@{/catalogo-cuentas/guardar}"
+                      th:object="${cuenta}"
+                      method="post">
 
-                <table class="tabla-libro">
-                    <thead>
-                    <tr>
-                        <th>Total Debe</th>
-                        <th>Total Haber</th>
-                        <th>Saldo Deudor</th>
-                        <th>Saldo Acreedor</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td th:text="${#numbers.formatDecimal(reg.totalDebe, 1, 'POINT', 2, 'POINT')}">
-                            0.00
-                        </td>
-                        <td th:text="${#numbers.formatDecimal(reg.totalHaber, 1, 'POINT', 2, 'POINT')}">
-                            0.00
-                        </td>
+                    <input type="hidden" th:field="*{id}"/>
 
-                        <!-- Si el saldo es >= 0 lo mostramos como deudor, si es < 0 lo mostramos como acreedor (en positivo) -->
-                        <td th:text="${reg.saldo >= 0} ?
-                                     ${#numbers.formatDecimal(reg.saldo, 1, 'POINT', 2, 'POINT')} :
-                                     '0.00'">
-                            0.00
-                        </td>
-                        <td th:text="${reg.saldo < 0} ?
-                                     ${#numbers.formatDecimal(-reg.saldo, 1, 'POINT', 2, 'POINT')} :
-                                     '0.00'">
-                            0.00
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="codigo">Código:</label>
+                            <input type="text" id="codigo" th:field="*{codigo}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nombre">Nombre:</label>
+                            <input type="text" id="nombre" th:field="*{nombre}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="tipo">Tipo:</label>
+                            <select id="tipo" th:field="*{tipo}" required>
+                                <option value="">-- Seleccione --</option>
+                                <option value="activo">Activo</option>
+                                <option value="pasivo">Pasivo</option>
+                                <option value="patrimonio">Patrimonio</option>
+                                <option value="ingreso">Ingreso</option>
+                                <option value="gasto">Gasto</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="categoria">Categoría:</label>
+                            <input type="text" id="categoria" th:field="*{categoria}"
+                                   placeholder="corriente, no corriente, operativa, etc.">
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primario">
+                            <i class="bi bi-save"></i> Guardar
+                        </button>
+                        <a th:href="@{/catalogo-cuentas}" class="btn btn-secundario">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
             </div>
         </section>
 

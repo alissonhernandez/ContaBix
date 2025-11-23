@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Libro Mayor - Contabix</title>
+    <title>Balance General - Contabix</title>
 
     <link rel="stylesheet" th:href="@{/css/libro-diario-list.css}">
     <link rel="stylesheet" th:href="@{/css/inicio.css}">
@@ -54,7 +54,7 @@
                     </a>
                 </li>
 
-                <li class="active">
+                <li>
                     <a th:href="@{/libro-mayor}">
                         <i class="bi bi-bar-chart-line"></i>
                         <span>Libro Mayor</span>
@@ -75,7 +75,7 @@
                     </a>
                 </li>
 
-                <li>
+                <li class="active">
                     <a th:href="@{/balance-general}">
                         <i class="bi bi-table"></i>
                         <span>Balance General</span>
@@ -121,49 +121,98 @@
         </button>
 
         <section class="libro-diario-section">
-            <h1>Libro Mayor</h1>
+            <h1>Balance General</h1>
 
-            <!-- Una tarjeta por cada cuenta -->
-            <div th:each="reg : ${registros}" class="card mayor-card">
-                <div class="mayor-header">
-                    <h2 th:text="${reg.cuentaContable.codigo + ' - ' + reg.cuentaContable.nombre}">
-                        1101 - Caja
-                    </h2>
-                </div>
-
+            <!-- ====== ACTIVOS ====== -->
+            <h2>Activos</h2>
+            <div class="tabla-container">
                 <table class="tabla-libro">
                     <thead>
                     <tr>
-                        <th>Total Debe</th>
-                        <th>Total Haber</th>
-                        <th>Saldo Deudor</th>
-                        <th>Saldo Acreedor</th>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>Saldo</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td th:text="${#numbers.formatDecimal(reg.totalDebe, 1, 'POINT', 2, 'POINT')}">
-                            0.00
-                        </td>
-                        <td th:text="${#numbers.formatDecimal(reg.totalHaber, 1, 'POINT', 2, 'POINT')}">
-                            0.00
-                        </td>
+                    <tr th:each="a : ${activos}">
+                        <td th:text="${a.codigo}">1101</td>
+                        <td th:text="${a.nombre}">Caja</td>
+                        <td th:text="${a.categoria}">Corriente</td>
 
-                        <!-- Si el saldo es >= 0 lo mostramos como deudor, si es < 0 lo mostramos como acreedor (en positivo) -->
-                        <td th:text="${reg.saldo >= 0} ?
-                                     ${#numbers.formatDecimal(reg.saldo, 1, 'POINT', 2, 'POINT')} :
-                                     '0.00'">
+                        <!-- Mostramos el saldo SIEMPRE en positivo -->
+                        <td th:text="${#numbers.formatDecimal(T(java.lang.Math).abs(a.saldo), 1, 'POINT', 2, 'POINT')}">
                             0.00
                         </td>
-                        <td th:text="${reg.saldo < 0} ?
-                                     ${#numbers.formatDecimal(-reg.saldo, 1, 'POINT', 2, 'POINT')} :
-                                     '0.00'">
-                            0.00
-                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(activos)}">
+                        <td colspan="4" style="text-align: center;">No hay activos registrados.</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
+
+            <!-- ====== PASIVOS ====== -->
+            <h2>Pasivos</h2>
+            <div class="tabla-container">
+                <table class="tabla-libro">
+                    <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>Saldo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="p : ${pasivos}">
+                        <td th:text="${p.codigo}">2101</td>
+                        <td th:text="${p.nombre}">Proveedores</td>
+                        <td th:text="${p.categoria}">Corriente</td>
+
+                        <!-- También en positivo (sin signo -) -->
+                        <td th:text="${#numbers.formatDecimal(T(java.lang.Math).abs(p.saldo), 1, 'POINT', 2, 'POINT')}">
+                            0.00
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(pasivos)}">
+                        <td colspan="4" style="text-align: center;">No hay pasivos registrados.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ====== PATRIMONIO ====== -->
+            <h2>Patrimonio</h2>
+            <div class="tabla-container">
+                <table class="tabla-libro">
+                    <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>Saldo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="pt : ${patrimonio}">
+                        <td th:text="${pt.codigo}">3101</td>
+                        <td th:text="${pt.nombre}">Capital Social</td>
+                        <td th:text="${pt.categoria}">Patrimonio</td>
+
+                        <!-- Sin signos negativos -->
+                        <td th:text="${#numbers.formatDecimal(T(java.lang.Math).abs(pt.saldo), 1, 'POINT', 2, 'POINT')}">
+                            0.00
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(patrimonio)}">
+                        <td colspan="4" style="text-align: center;">No hay cuentas de patrimonio.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
         </section>
 
         <footer class="main-footer">
