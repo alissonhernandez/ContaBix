@@ -26,6 +26,14 @@ public class Asiento {
     @OneToMany(mappedBy = "asiento", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<DetalleAsiento> detalles = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "periodo_id")
+    private PeriodoContable periodo;
+
+    public PeriodoContable getPeriodo() { return periodo; }
+    public void setPeriodo(PeriodoContable periodo) { this.periodo = periodo; }
+
+
 
     // 🔗 Documento fuente asociado (opcional)
     @OneToOne

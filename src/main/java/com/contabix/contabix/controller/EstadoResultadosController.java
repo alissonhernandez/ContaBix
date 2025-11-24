@@ -2,7 +2,9 @@ package com.contabix.contabix.controller;
 
 import com.contabix.contabix.dto.EstadoResultadosDTO;
 import com.contabix.contabix.service.EstadoResultadosService;
+import com.contabix.contabix.service.ExportService;
 import com.contabix.contabix.util.SecurityUtils;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,4 +36,20 @@ public class EstadoResultadosController {
         model.addAttribute("estado", estado);
         return "estado-resultados";
     }
+
+    @Autowired
+    private ExportService exportService;
+
+    @GetMapping("/estado-resultados/export/pdf")
+    public void exportarPdf(HttpServletResponse response) throws Exception {
+
+        EstadoResultadosDTO estado = estadoResultadosService.calcularEstadoResultados();
+
+        byte[] pdf = exportService.generarPdfEstadoResultados(estado);
+
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=estado_resultados.pdf");
+        response.getOutputStream().write(pdf);
+    }
+
 }

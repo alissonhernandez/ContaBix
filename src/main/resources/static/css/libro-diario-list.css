@@ -246,6 +246,24 @@ tbody tr:hover {
     transform: translateY(-2px);
 }
 
+/* Boton Exportar */
+.export-buttons {
+    margin-bottom: 20px;
+}
+
+.btn-export {
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.btn-export.pdf { background: #d9534f; }
+.btn-export.excel { background: #5cb85c; }
+.btn-export:hover { opacity: 0.8; }
+
 /* ================================
    RESPONSIVE ADAPTADO
 ================================ */

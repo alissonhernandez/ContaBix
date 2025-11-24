@@ -14,4 +14,5 @@ public interface AsientoRepository extends JpaRepository<Asiento, Integer> {
 
     // Búsqueda simple por descripción conteniendo texto
     List<Asiento> findByDescripcionContainingIgnoreCase(String texto);
+
 }

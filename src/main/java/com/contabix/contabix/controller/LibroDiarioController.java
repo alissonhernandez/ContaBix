@@ -11,8 +11,10 @@ import com.contabix.contabix.repository.DocumentoFuenteRepository;
 import com.contabix.contabix.repository.UsuarioRepository;
 import com.contabix.contabix.service.AsientoService;
 import com.contabix.contabix.service.AuditoriaService;
+import com.contabix.contabix.service.ExportService;
 import com.contabix.contabix.service.LibroMayorService;
 import com.contabix.contabix.util.SecurityUtils;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -51,6 +53,10 @@ public class LibroDiarioController {
 
     @Autowired
     private AuditoriaService auditoriaService;
+
+    @Autowired
+    private ExportService exportService;
+
 
     // Listado con filtros y sumas (admin + contador)
     @GetMapping
@@ -305,5 +311,19 @@ public class LibroDiarioController {
         }
         return "redirect:/libro-diario";
     }
+
+    @GetMapping("/librodiario/export/pdf")
+    public void exportarPdf(HttpServletResponse response) throws Exception {
+
+        List<Asiento> asientos = asientoService.listarTodos();
+
+        byte[] pdf = exportService.generarPdfLibroDiario(asientos);
+
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=libro_diario.pdf");
+        response.getOutputStream().write(pdf);
+    }
+
+
 
 }

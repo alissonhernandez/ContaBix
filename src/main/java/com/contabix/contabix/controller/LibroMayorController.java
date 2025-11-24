@@ -1,9 +1,12 @@
 package com.contabix.contabix.controller;
 
 import com.contabix.contabix.model.LibroMayor;
+import com.contabix.contabix.service.ExportService;
 import com.contabix.contabix.service.LibroMayorService;
 import com.contabix.contabix.util.SecurityUtils;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,4 +37,21 @@ public class LibroMayorController {
         model.addAttribute("registros", registros);
         return "libro-mayor";
     }
+
+    @Autowired
+    private ExportService exportService;
+
+    @GetMapping("/libro-mayor/export/pdf")
+    public void exportarPdf(HttpServletResponse response) throws Exception {
+
+        List<LibroMayor> registros = service.listarTodos();
+
+        byte[] pdf = exportService.generarPdfLibroMayor(registros);
+
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=libro_mayor.pdf");
+        response.getOutputStream().write(pdf);
+    }
+
+
 }
