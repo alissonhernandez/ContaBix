@@ -143,7 +143,7 @@
             </thead>
 
             <tbody>
-            <tr th:each="c : ${balance}">
+            <tr th:each="c : ${balance}" th:classappend="${c.codigo == 'TOTAL'} ? 'total'">
                 <td th:text="${c.codigo}"></td>
                 <td th:text="${c.nombre}"></td>
                 <td th:text="${#numbers.formatDecimal(c.sumDebe, 1, 'POINT', 2, 'POINT')}"></td>

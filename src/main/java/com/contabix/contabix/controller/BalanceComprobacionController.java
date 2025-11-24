@@ -28,6 +28,5 @@ public class BalanceComprobacionController {
         }
 
         model.addAttribute("balance", service.generarBalance());
-        return "balance-comprobacion";
-    }
+        return "balance-comprobacion";    }
 }
