@@ -19,22 +19,94 @@
 
         <nav class="sidebar-nav">
             <ul>
-                <li><a th:href="@{/inicio}"><i class="bi bi-house-door"></i><span>Inicio</span></a></li>
-                <li><a th:href="@{/perfil}"><i class="bi bi-person-circle"></i><span>Perfil</span></a></li>
-                <li><a th:href="@{/libro-diario}"><i class="bi bi-journal-text"></i><span>Libro Diario</span></a></li>
-                <li><a th:href="@{/libro-mayor}"><i class="bi bi-bar-chart-line"></i><span>Libro Mayor</span></a></li>
-                <li><a th:href="@{/estado-resultados}"><i class="bi bi-graph-up-arrow"></i><span>Estado de Resultados</span></a></li>
-                <li><a th:href="@{/balance-comprobacion}"><i class="bi bi-list-columns-reverse"></i><span>Balance de Comprobación</span></a></li>
-                <li><a th:href="@{/documentos}"><i class="bi bi-file-earmark-text"></i><span>Documentos Fuente</span></a></li>
-
-                <li class="active">
-                    <a th:href="@{/clasificaciones}">
-                        <i class="bi bi-tags"></i><span>Clasificaciones</span>
+                <li>
+                    <a th:href="@{/inicio}">
+                        <i class="bi bi-house-door"></i>
+                        <span>Inicio</span>
                     </a>
                 </li>
 
-                <li><a th:href="@{/auditoria}"><i class="bi bi-shield-check"></i><span>Auditoría</span></a></li>
-                <li class="logout"><a th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i><span>Cerrar Sesión</span></a></li>
+                <li>
+                    <a th:href="@{/perfil}">
+                        <i class="bi bi-person-circle"></i>
+                        <span>Perfil</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a th:href="@{/libro-diario}">
+                        <i class="bi bi-journal-text"></i>
+                        <span>Libro Diario</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a th:href="@{/libro-mayor}">
+                        <i class="bi bi-bar-chart-line"></i>
+                        <span>Libro Mayor</span>
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/balance-general}">
+                        <i class="bi bi-table"></i>
+                        <span>Balance General</span>
+                    </a>
+                </li>
+
+
+                <li>
+                    <a th:href="@{/estado-resultados}">
+                        <i class="bi bi-graph-up-arrow"></i>
+                        <span>Estado de Resultados</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a th:href="@{/balance-comprobacion}">
+                        <i class="bi bi-list-columns-reverse"></i>
+                        <span>Balance de Comprobación</span>
+                    </a>
+                </li>
+                <a th:href="@{/catalogo-cuentas}">
+                    <i class="bi bi-card-list"></i>
+                    <span>Catálogo de Cuentas</span>
+                </a>
+
+
+                <li>
+                    <a th:href="@{/documentos}">
+                        <i class="bi bi-file-earmark-text"></i>
+                        <span>Documentos Fuente</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a th:href="@{/auditoria}">
+                        <i class="bi bi-shield-check"></i>
+                        <span>Auditoría</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/clasificaciones}" class="nav-link">
+                        <i class="bi bi-tags"></i>
+                        <span>Clasificaciones</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a th:href="@{/periodos}">
+                        <i class="bi bi-calendar-range"></i>
+                        <span>Periodos Contables</span>
+                    </a>
+                </li>
+
+
+                <li class="logout">
+                    <a th:href="@{/logout}">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Cerrar Sesión</span>
+                    </a>
+                </li>
             </ul>
         </nav>
     </aside>

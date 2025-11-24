@@ -61,13 +61,13 @@
                         <span>Libro Mayor</span>
                     </a>
                 </li>
-
                 <li>
-                    <a th:href="@{/balance-comprobacion}">
-                        <i class="bi bi-list-columns-reverse"></i>
-                        <span>Balance de Comprobación</span>
+                    <a th:href="@{/balance-general}">
+                        <i class="bi bi-table"></i>
+                        <span>Balance General</span>
                     </a>
                 </li>
+
 
                 <li>
                     <a th:href="@{/estado-resultados}">
@@ -77,18 +77,16 @@
                 </li>
 
                 <li>
-                    <a th:href="@{/balance-general}">
-                        <i class="bi bi-table"></i>
-                        <span>Balance General</span>
+                    <a th:href="@{/balance-comprobacion}">
+                        <i class="bi bi-list-columns-reverse"></i>
+                        <span>Balance de Comprobación</span>
                     </a>
                 </li>
+                <a th:href="@{/catalogo-cuentas}">
+                    <i class="bi bi-card-list"></i>
+                    <span>Catálogo de Cuentas</span>
+                </a>
 
-                <li>
-                    <a th:href="@{/catalogo-cuentas}">
-                        <i class="bi bi-card-list"></i>
-                        <span>Catálogo de Cuentas</span>
-                    </a>
-                </li>
 
                 <li>
                     <a th:href="@{/documentos}">
@@ -103,6 +101,20 @@
                         <span>Auditoría</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a th:href="@{/clasificaciones}" class="nav-link">
+                        <i class="bi bi-tags"></i>
+                        <span>Clasificaciones</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a th:href="@{/periodos}">
+                        <i class="bi bi-calendar-range"></i>
+                        <span>Periodos Contables</span>
+                    </a>
+                </li>
+
 
                 <li class="logout">
                     <a th:href="@{/logout}">
